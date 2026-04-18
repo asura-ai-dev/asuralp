@@ -28,10 +28,6 @@ export default function Pain() {
           <h2 className="sec-h">
             resolving<span className="a">.log</span>
           </h2>
-          <p className="sec-sub">
-            問題をふわっとした悩みのままにせず、ターミナルに流れるログのように見える化します。
-            何が詰まりの原因かを整理し、どこから解決すればいいかまで一緒に決めます。
-          </p>
         </div>
 
         <div className="pain-term term">
