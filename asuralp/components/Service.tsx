@@ -1,31 +1,31 @@
 const SERVICES = [
   {
     id: "SVC/01",
-    title: "web app build",
-    description:
-      "LPからSaaSまで、見える画面だけでなくAPIやDBまで含めて一気通貫で設計・実装します。",
-    tags: ["Next.js", "TypeScript", "Bun", "Postgres"],
+    title: "LP / Web制作",
+    lead: "あなたのビジネスを、最速でWebに。",
+    description: "まずはモックをお見せします。",
+    meta: "5万円〜 / 最短3日納品",
   },
   {
     id: "SVC/02",
-    title: "ai agent design",
-    description:
-      "問い合わせ、調査、社内オペレーションを自動化するAIエージェントを、業務に合わせて組み込みます。",
-    tags: ["OpenAI", "MCP", "Automation", "Slack"],
+    title: "AI導入サポート",
+    lead: "「AIって何から始めれば...？」",
+    description: "そんな疑問に、現場を知る人間が答えます。",
+    meta: "要相談 / まずは無料相談から",
   },
   {
     id: "SVC/03",
-    title: "architecture support",
-    description:
-      "何をどう作るかだけでなく、なぜその構成にするのかまで、非エンジニアにも分かる形で整理します。",
-    tags: ["Review", "DX", "Infra", "Roadmap"],
+    title: "Claude Code導入講座",
+    lead: "Coming Soon",
+    description: "公開準備中です。もう少々お待ちください。",
+    meta: "",
   },
   {
     id: "SVC/04",
-    title: "launch & operate",
-    description:
-      "公開後の改善、計測、通知フローまで含めて、止まらず育つプロダクトに整えます。",
-    tags: ["Analytics", "Webhook", "Monitoring", "Growth"],
+    title: "アプリ開発",
+    lead: "業務効率化ツールから、オリジナルアプリまで",
+    description: "あなたの課題を、アプリで解決します",
+    meta: "要相談",
   },
 ];
 
@@ -48,12 +48,11 @@ export default function Service() {
             <article className="svc reveal" key={service.id}>
               <div className="svc-id">{service.id}</div>
               <h3>{service.title}</h3>
-              <p>{service.description}</p>
-              <div className="svc-tags">
-                {service.tags.map((tag) => (
-                  <span key={tag}>{tag}</span>
-                ))}
+              <div className="svc-copy">
+                <p className="svc-lead">{service.lead}</p>
+                <p>{service.description}</p>
               </div>
+              {service.meta ? <p className="svc-meta">{service.meta}</p> : null}
             </article>
           ))}
         </div>

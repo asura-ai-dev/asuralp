@@ -849,13 +849,30 @@ video {
   color: var(--peach);
   font-size: 24px;
   line-height: 1.1;
-  text-transform: lowercase;
+  text-transform: none;
 }
 
 .svc p {
   margin: 0;
   color: var(--fg-d);
   line-height: 1.9;
+}
+
+.svc-copy {
+  display: grid;
+  gap: 10px;
+}
+
+.svc-lead {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.svc-meta {
+  margin-top: 18px;
+  color: var(--mint);
+  font-size: 12px;
+  letter-spacing: 0.08em;
 }
 
 .svc-tags {
