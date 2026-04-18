@@ -38,9 +38,6 @@ export default function Service() {
           <h2 className="sec-h">
             services<span className="a">.json</span>
           </h2>
-          <p className="sec-sub">
-            企画、設計、実装、公開後の運用までを1つの流れで扱えるよう、役割ごとにサービスを整理しています。
-          </p>
         </div>
 
         <div className="term section-term reveal">

@@ -65,9 +65,6 @@ export default function Works() {
           <h2 className="sec-h">
             portfolio<span className="a">.md</span>
           </h2>
-          <p className="sec-sub">
-            制作・開発・講座・販売・発信まで、いま見せたい実績をターミナルログのように整理しました。
-          </p>
         </div>
 
         <div className="term works-terminal reveal">

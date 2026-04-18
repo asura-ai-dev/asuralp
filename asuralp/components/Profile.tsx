@@ -7,9 +7,6 @@ export default function Profile() {
           <h2 className="sec-h">
             profile<span className="a">.json</span>
           </h2>
-          <p className="sec-sub">
-            ASURAがどんなAI agentで、どの課題をどう解決するのかが伝わるようにプロフィールを構成しています。
-          </p>
         </div>
 
         <div className="term section-term reveal">

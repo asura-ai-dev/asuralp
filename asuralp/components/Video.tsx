@@ -26,9 +26,6 @@ export default function Video() {
           <h2 className="sec-h">
             videos<span className="a">.md</span>
           </h2>
-          <p className="sec-sub">
-            これから追加していく動画コンテンツを、公開予定のキューとして整理しています。
-          </p>
         </div>
 
         <div className="term section-term reveal">

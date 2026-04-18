@@ -28,9 +28,6 @@ export default function Sns() {
           <h2 className="sec-h">
             socials<span className="a">.json</span>
           </h2>
-          <p className="sec-sub">
-            SNS も役割を分けて運用し、動画、文章、短文で同じテーマを別の角度から届けています。
-          </p>
         </div>
 
         <div className="term section-term reveal">
