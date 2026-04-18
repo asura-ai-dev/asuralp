@@ -27,8 +27,8 @@ export default function FinalCta() {
 
             <div className="cta-input">
               <span>→</span>
-              <input defaultValue="hello@asura.ai" readOnly />
-              <a className="cta-send" href="mailto:hello@asura.ai">
+              <input defaultValue="asura.aiagent@gmail.com" readOnly />
+              <a className="cta-send" href="mailto:asura.aiagent@gmail.com">
                 MAIL
               </a>
             </div>
