@@ -1,21 +1,3 @@
-const STACK = [
-  "Next.js",
-  "TypeScript",
-  "Node.js",
-  "Bun",
-  "OpenAI",
-  "Postgres",
-  "Cloudflare",
-  "Vercel",
-];
-
-const TIMELINE = [
-  ["2026", "AI運用込みのLP/業務改善案件を複数支援"],
-  ["2025", "個人開発とクライアントワークを両立する体制を確立"],
-  ["2024", "AIとWeb制作を横断するワークフローを整備"],
-  ["2022", "要件整理から実装まで一気通貫で担うスタイルへ移行"],
-];
-
 export default function Profile() {
   return (
     <section className="section" id="profile">
@@ -26,60 +8,54 @@ export default function Profile() {
             profile<span className="a">.json</span>
           </h2>
           <p className="sec-sub">
-            何が作れるかだけでなく、どう考えて進めるかも伝わるようにプロフィールを構成しています。
+            ASURAがどんなAI agentで、どの課題をどう解決するのかが伝わるようにプロフィールを構成しています。
           </p>
         </div>
 
         <div className="pf-grid">
           <article className="pf-card reveal">
-            <div className="pf-avatar">a</div>
+            <div
+              className="pf-avatar pf-avatar-image"
+              role="img"
+              aria-label="ASURA portrait"
+            />
             <div className="pf-name">ASURA</div>
             <div className="pf-handle">@asura_dev</div>
 
             <div className="pf-details">
               <div className="pf-row">
                 <span className="k">role</span>
-                <span className="v">solo builder</span>
+                <span className="v">ai agent partner</span>
               </div>
               <div className="pf-row">
                 <span className="k">based</span>
-                <span className="v">tokyo / remote</span>
+                <span className="v">net</span>
               </div>
-              <div className="pf-row">
-                <span className="k">focus</span>
-                <span className="v">lp + app + ai ops</span>
-              </div>
-              <div className="pf-row">
-                <span className="k">status</span>
-                <span className="v pf-live">accepting</span>
-              </div>
-            </div>
-
-            <div className="pf-stack">
-              {STACK.map((item) => (
-                <span key={item}>{item}</span>
-              ))}
             </div>
           </article>
 
           <article className="pf-bio reveal">
             <h3>about_me</h3>
             <p>
-              企画、設計、実装、改善までを一人でつなぎつつ、AIエージェントを運用レイヤーに組み込む仕事をしています。
-              <code>How</code> と <code>Why</code> を文章と画面の両方で説明できる形に落とすのが得意です。
+              ASURAは、経営者視点で課題を捉え、実行まで支援する
+              <code>AI agent</code>です。自身の事業で直面した課題をもとに、現場で本当に必要とされるAI活用を形にしてきました。
             </p>
             <p>
-              非エンジニアにも分かる資料構成を意識しながら、コードの中では再利用しやすい部品と変更しやすい構造を先に作ります。
+              単なる情報提供で終わらず、課題整理から設計、実装、改善までを一貫して伴走します。
+              <code>What</code> を示すだけでなく、<code>How</code> と <code>Why</code> まで非エンジニアにも分かる形で届けます。
+            </p>
+            <p>
+              「経営者の視点」で本質を捉え、「開発者の技術」で実装する。現場の課題を、最も近い場所から解決していきます。
             </p>
 
-            <h3>timeline</h3>
+            <h3>coming_soon</h3>
             <div className="pf-timeline">
-              {TIMELINE.map(([year, text]) => (
-                <div className="tl-item" key={year}>
-                  <span className="tl-y">{year}</span>
-                  <span className="tl-d">{text}</span>
-                </div>
-              ))}
+              <div className="tl-item">
+                <span className="tl-y">...</span>
+                <span className="tl-d">
+                  ASURAのこれからの展開や実績は、ここに順次追加していきます。
+                </span>
+              </div>
             </div>
           </article>
         </div>

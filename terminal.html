@@ -1013,6 +1013,7 @@
       .pf-avatar {
         aspect-ratio: 1;
         border-radius: 10px;
+        overflow: hidden;
         background:
           radial-gradient(circle at 35% 30%, var(--peach), transparent 55%),
           radial-gradient(circle at 70% 70%, var(--mint), transparent 55%),
@@ -1024,6 +1025,17 @@
         font-size: 60px;
         color: var(--bg);
         text-shadow: 0 0 20px var(--mint);
+      }
+      .pf-avatar-image {
+        background-image:
+          linear-gradient(180deg, rgba(10, 13, 11, 0.04), rgba(10, 13, 11, 0.22)),
+          url("./asuralp/public/images/asura-avatar.png"),
+          radial-gradient(circle at 35% 30%, var(--peach), transparent 55%),
+          radial-gradient(circle at 70% 70%, var(--mint), transparent 55%);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
       }
       .pf-name {
         font-size: 22px;
@@ -1974,85 +1986,49 @@
         <div class="sec-head reveal">
           <div class="sec-tag">whoami</div>
           <h2 class="sec-h">profile<span class="a">.json</span></h2>
+          <p class="sec-sub">
+            ASURAがどんなAI agentで、どの課題をどう解決するのかが伝わるようにプロフィールを構成しています。
+          </p>
         </div>
         <div class="pf-grid">
           <div class="pf-card reveal">
-            <div class="pf-avatar">a</div>
-            <div class="pf-name">明日羅 蒼真</div>
+            <div
+              class="pf-avatar pf-avatar-image"
+              role="img"
+              aria-label="ASURA portrait"
+            ></div>
+            <div class="pf-name">ASURA</div>
             <div class="pf-handle">@asura_dev</div>
             <div style="margin-top: 22px">
               <div class="pf-row">
-                <span class="k">role</span><span class="v">solo developer</span>
+                <span class="k">role</span><span class="v">ai agent partner</span>
               </div>
               <div class="pf-row">
-                <span class="k">based</span><span class="v">tokyo, jp</span>
+                <span class="k">based</span><span class="v">net</span>
               </div>
-              <div class="pf-row">
-                <span class="k">since</span><span class="v">2018</span>
-              </div>
-              <div class="pf-row">
-                <span class="k">caffeine</span><span class="v">∞ ml/day</span>
-              </div>
-              <div class="pf-row">
-                <span class="k">status</span
-                ><span class="v" style="color: var(--mint)">● accepting</span>
-              </div>
-            </div>
-            <div class="pf-stack">
-              <span>TypeScript</span><span>Rust</span><span>Bun</span
-              ><span>Hono</span> <span>Next.js</span><span>Postgres</span
-              ><span>Cloudflare</span><span>Tailwind</span>
-              <span>Anthropic</span><span>OpenAI</span><span>MCP</span>
             </div>
           </div>
           <div class="pf-bio reveal">
             <h3>about_me</h3>
             <p>
-              東京を拠点に活動する
-              <code>solo developer</code
-              >。SaaS、AIエージェント、OSSツールを個人で企画・開発・運営している。会社員時代に大手SIerでアーキテクトとして勤務後、2022年に独立。現在はプロダクト3本を一人で運営し、年商
-              <code>¥80M+</code> を達成。
+              ASURAは、経営者視点で課題を捉え、実行まで支援する
+              <code>AI agent</code
+              >です。自身の事業で直面した課題をもとに、現場で本当に必要とされるAI活用を形にしてきました。
             </p>
             <p>
-              "会社をひとりで持つ"
-              をテーマに、AIエージェントを駆使した1人組織の運用ノウハウをYouTube/note/Xで発信中。著書『ひとりで作る、ひとりで売る』(2025)。Forbes
-              JAPAN "Solo Builders 30" 選出。
+              単なる情報提供で終わらず、課題整理から設計、実装、改善までを一貫して伴走します。
+              <code>What</code> だけでなく、<code>How</code> と
+              <code>Why</code> まで非エンジニアにも分かる形で届けます。
             </p>
-            <h3>timeline</h3>
+            <p>
+              「経営者の視点」で本質を捉え、「開発者の技術」で実装する。現場の課題を、最も近い場所から解決していきます。
+            </p>
+            <h3>coming_soon</h3>
             <div class="pf-timeline">
               <div class="tl-item">
-                <span class="tl-y">2026</span
+                <span class="tl-y">...</span
                 ><span class="tl-d"
-                  ><b>notar v2.0 リリース</b>導入企業80社突破 /
-                  個人開発者向けカンファレンス登壇</span
-                >
-              </div>
-              <div class="tl-item">
-                <span class="tl-y">2025</span
-                ><span class="tl-d"
-                  ><b>著書出版・Forbes掲載</b
-                  >『ひとりで作る、ひとりで売る』(技術評論社)</span
-                >
-              </div>
-              <div class="tl-item">
-                <span class="tl-y">2024</span
-                ><span class="tl-d"
-                  ><b>flux.rs OSS化</b>GitHub 8.4k stars / Product Hunt 1位
-                  (CodeNest)</span
-                >
-              </div>
-              <div class="tl-item">
-                <span class="tl-y">2022</span
-                ><span class="tl-d"
-                  ><b>独立・個人開発者へ</b
-                  >大手SIerを退職、初プロダクトをローンチ</span
-                >
-              </div>
-              <div class="tl-item">
-                <span class="tl-y">2018</span
-                ><span class="tl-d"
-                  ><b>キャリア開始</b
-                  >東京大学工学部卒、新卒でアーキテクトに</span
+                  >ASURAのこれからの展開や実績は、ここに順次追加していきます。</span
                 >
               </div>
             </div>

@@ -1220,6 +1220,7 @@ video {
   max-width: 180px;
   border: 1px solid var(--line);
   border-radius: 12px;
+  overflow: hidden;
   background:
     radial-gradient(circle at 35% 30%, rgba(255, 176, 122, 0.85), transparent 55%),
     radial-gradient(circle at 70% 70%, rgba(127, 227, 168, 0.75), transparent 55%),
@@ -1228,6 +1229,18 @@ video {
   font-family: var(--f-deco);
   font-size: 72px;
   text-transform: lowercase;
+}
+
+.pf-avatar-image {
+  background-image:
+    linear-gradient(180deg, rgba(10, 13, 11, 0.04), rgba(10, 13, 11, 0.22)),
+    url("/images/asura-avatar.png"),
+    radial-gradient(circle at 35% 30%, rgba(255, 176, 122, 0.85), transparent 55%),
+    radial-gradient(circle at 70% 70%, rgba(127, 227, 168, 0.75), transparent 55%);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .pf-name {
