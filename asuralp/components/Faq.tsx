@@ -9,34 +9,37 @@ type FaqItem = {
 
 const FAQ_ITEMS: FaqItem[] = [
   {
-    question: "最小予算はいくらから？",
+    question: "AIって難しそうなんですけど...",
     answer:
-      "プロトタイプ開発で¥300k〜、本格的なSaaS開発で¥1.5M〜。月額顧問契約は¥80k/月から承ります。",
+      "大丈夫です。まずはあなたのやりたいことを聞かせてください。AIの知識がなくても、一緒に最適な方法を見つけます。",
   },
   {
-    question: "どれくらいで出来上がりますか？",
+    question: "料金の目安は？",
     answer:
-      "MVPは2〜4週間、フル機能のWebアプリで6〜12週間が目安。要件次第で前後しますので、まずは相談ください。",
+      "LP制作は3万円〜です。AI導入サポート・アプリ開発は、まずは無料相談でお話を聞かせてください。",
   },
   {
-    question: "納品後の保守も対応しますか？",
+    question: "どのくらいの期間でできますか？",
     answer:
-      "月額保守プラン(¥50k〜)で対応します。AIエージェントによる監視・自動修復もセットで提供できます。",
+      "LP制作は2日以内にモックをお見せします。",
   },
   {
-    question: "技術相談だけでもOK？",
+    question: "電話やオンライン会議はありますか？",
     answer:
-      "単発相談(¥30k/h)または月額顧問契約で対応可能。アーキ設計やコードレビューだけでも大丈夫です。",
+      "基本的にメール・チャット・DMで対応しています。お互いの時間を大切にしたいので、まずはテキストでお気軽にご相談ください。",
   },
   {
-    question: "遠方ですが対応可能？",
+    question: "まずは相談だけでもいいですか？",
     answer:
-      "フルリモート対応です。日本全国・海外問わずSlack/Notion/Zoomで完結します。",
+      "もちろんです。無料相談からどうぞ。チャットでも、メールでもお気軽に。",
   },
 ];
 
 export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  const activeIndex = hoveredIndex ?? openIndex;
 
   const handleToggle = (index: number) => {
     setOpenIndex((current) => (current === index ? null : index));
@@ -70,17 +73,32 @@ export default function Faq() {
           <div className="term-body section-term-body">
             <div className="faq">
               {FAQ_ITEMS.map((item, index) => {
-                const isOpen = openIndex === index;
+                const isOpen = activeIndex === index;
                 const answerId = `faq-answer-${index}`;
                 const questionId = `faq-question-${index}`;
 
                 return (
-                  <div className="faq-item" key={item.question}>
+                  <div
+                    className="faq-item"
+                    key={item.question}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() =>
+                      setHoveredIndex((current) =>
+                        current === index ? null : current,
+                      )
+                    }
+                  >
                     <button
                       aria-controls={answerId}
                       aria-expanded={isOpen}
                       className={`faq-q${isOpen ? " open" : ""}`}
                       id={questionId}
+                      onBlur={() =>
+                        setHoveredIndex((current) =>
+                          current === index ? null : current,
+                        )
+                      }
+                      onFocus={() => setHoveredIndex(index)}
                       onClick={() => handleToggle(index)}
                       type="button"
                     >

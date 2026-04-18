@@ -2046,40 +2046,39 @@
         </div>
         <div class="faq reveal">
           <div class="faq-q">
-            <span class="q">最小予算はいくらから？</span
+            <span class="q">AIって難しそうなんですけど...</span
             ><span class="t">[+]</span>
           </div>
           <div class="faq-a">
-            プロトタイプ開発で¥300k〜、本格的なSaaS開発で¥1.5M〜。月額顧問契約は¥80k/月から承ります。
+            大丈夫です。まずはあなたのやりたいことを聞かせてください。AIの知識がなくても、一緒に最適な方法を見つけます。
           </div>
           <div class="faq-q">
-            <span class="q">どれくらいで出来上がりますか？</span
+            <span class="q">料金の目安は？</span
             ><span class="t">[+]</span>
           </div>
           <div class="faq-a">
-            MVPは2〜4週間、フル機能のWebアプリで6〜12週間が目安。要件次第で前後しますので、まずは相談ください。
+            LP制作は3万円〜です。AI導入サポート・アプリ開発は、まずは無料相談でお話を聞かせてください。
           </div>
           <div class="faq-q">
-            <span class="q">納品後の保守も対応しますか？</span
+            <span class="q">どのくらいの期間でできますか？</span
             ><span class="t">[+]</span>
           </div>
           <div class="faq-a">
-            月額保守プラン(¥50k〜)で対応します。AIエージェントによる監視・自動修復もセットで提供できます。
+            LP制作は2日以内にモックをお見せします。
           </div>
           <div class="faq-q">
-            <span class="q">技術相談だけでもOK？</span
+            <span class="q">電話やオンライン会議はありますか？</span
             ><span class="t">[+]</span>
           </div>
           <div class="faq-a">
-            単発相談 (¥30k/h)
-            または月額顧問契約で対応可能。アーキ設計やコードレビューだけでも大丈夫です。
+            基本的にメール・チャット・DMで対応しています。お互いの時間を大切にしたいので、まずはテキストでお気軽にご相談ください。
           </div>
           <div class="faq-q">
-            <span class="q">遠方ですが対応可能？</span
+            <span class="q">まずは相談だけでもいいですか？</span
             ><span class="t">[+]</span>
           </div>
           <div class="faq-a">
-            フルリモート対応です。日本全国・海外問わずSlack/Notion/Zoomで完結します。
+            もちろんです。無料相談からどうぞ。チャットでも、メールでもお気軽に。
           </div>
         </div>
       </div>
@@ -2208,17 +2207,29 @@
       document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
       // ===== faq =====
-      document.querySelectorAll(".faq-q").forEach((q) => {
+      const faqQuestions = [...document.querySelectorAll(".faq-q")];
+      let pinnedFaq = null;
+
+      const syncFaqState = (activeFaq = pinnedFaq) => {
+        faqQuestions.forEach((question) => {
+          const isOpen = question === activeFaq;
+          question.classList.toggle("open", isOpen);
+          question.querySelector(".t").textContent = isOpen ? "[-]" : "[+]";
+        });
+      };
+
+      faqQuestions.forEach((q) => {
         q.addEventListener("click", () => {
-          const open = q.classList.contains("open");
-          document.querySelectorAll(".faq-q").forEach((x) => {
-            x.classList.remove("open");
-            x.querySelector(".t").textContent = "[+]";
-          });
-          if (!open) {
-            q.classList.add("open");
-            q.querySelector(".t").textContent = "[-]";
-          }
+          pinnedFaq = pinnedFaq === q ? null : q;
+          syncFaqState();
+        });
+
+        q.addEventListener("mouseenter", () => {
+          syncFaqState(q);
+        });
+
+        q.addEventListener("mouseleave", () => {
+          syncFaqState();
         });
       });
 
