@@ -1,23 +1,19 @@
-const PAINS = [
+const PAIN_LOGS = [
   {
-    code: "E_SLOW_BUILD",
-    title: "外注で開発が遅い・伝わらない",
-    fix: "技術理解のある開発者が直接伴走し、要件から実装まで会話のズレを減らします。",
+    title: "人手不足",
+    lines: ["人が足りない。募集しても来ない。", "来てもすぐ辞める。"],
   },
   {
-    code: "E_OVER_BUDGET",
-    title: "制作会社の見積もりが高い",
-    fix: "MVPに必要な機能だけを切り出し、小さく作って早く検証する進め方を取ります。",
+    title: "AIわからない",
+    lines: ["やりたいことはあるのに、何から始めればいいかわからない。"],
   },
   {
-    code: "E_NO_OPS",
-    title: "作って終わりで運用が回らない",
-    fix: "監視、通知、改善ループまで初期設計に含め、納品後も回る状態を作ります。",
+    title: "外注高い",
+    lines: ["HP制作で50万、100万... 個人で出せる額じゃない。"],
   },
   {
-    code: "E_AI_UNUSED",
-    title: "AIを業務に活かせていない",
-    fix: "営業、調査、問い合わせ一次対応など、止まっている工程をエージェント化します。",
+    title: "時間がない",
+    lines: ["経営者は忙しい。効率化したいけど、手が回らない。"],
   },
 ];
 
@@ -31,18 +27,62 @@ export default function Pain() {
             ERROR を <span className="a">RESOLVING</span> に変える
           </h2>
           <p className="sec-sub">
-            どこで詰まっているかを技術の言葉に翻訳し、解決策まで一本の線でつなぎます。
+            問題をふわっとした悩みのままにせず、ターミナルに流れるログのように見える化します。
+            何が詰まりの原因かを整理し、どこから解決すればいいかまで一緒に決めます。
           </p>
         </div>
 
-        <div className="pain-list reveal">
-          {PAINS.map((pain) => (
-            <article className="pain-row" key={pain.code}>
-              <div className="err">{pain.code}</div>
-              <h3>{pain.title}</h3>
-              <p className="fix">{pain.fix}</p>
-            </article>
-          ))}
+        <div className="pain-term term reveal">
+          <div className="term-bar">
+            <div className="dots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <span className="path">~/asura/issues/errors.log</span>
+            <div className="tabs" aria-hidden="true">
+              <span className="act">stream</span>
+              <span>live</span>
+            </div>
+          </div>
+
+          <div className="pain-body term-body">
+            <p className="pain-command">
+              <span className="prompt">$</span> tail -f errors.log
+            </p>
+
+            <div className="pain-stream">
+              {PAIN_LOGS.map((pain) => (
+                <article className="pain-entry" key={pain.title}>
+                  <p className="pain-line pain-line-error">
+                    <span className="pain-prefix">&gt;</span>
+                    <span>
+                      <span className="pain-level">ERROR:</span>
+                      <span className="pain-title">{pain.title}</span>
+                    </span>
+                  </p>
+
+                  {pain.lines.map((line) => (
+                    <p className="pain-line pain-line-detail" key={line}>
+                      <span className="pain-prefix">&gt;</span>
+                      <span>{line}</span>
+                    </p>
+                  ))}
+                </article>
+              ))}
+
+              <div className="pain-entry pain-entry-resolving">
+                <p className="pain-line pain-line-resolving">
+                  <span className="pain-prefix">&gt;</span>
+                  <span className="pain-status">RESOLVING...</span>
+                </p>
+                <p className="pain-line pain-line-detail pain-line-detail-strong">
+                  <span className="pain-prefix">&gt;</span>
+                  <span>大丈夫です。解決できます。</span>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
