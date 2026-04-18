@@ -36,7 +36,7 @@ export default function Service() {
         <div className="sec-head reveal">
           <div className="sec-tag">ls ./services</div>
           <h2 className="sec-h">
-            what we <span className="a">build</span>
+            services<span className="a">.json</span>
           </h2>
           <p className="sec-sub">
             企画、設計、実装、公開後の運用までを1つの流れで扱えるよう、役割ごとにサービスを整理しています。

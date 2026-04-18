@@ -63,7 +63,7 @@ export default function Works() {
         <div className="sec-head reveal">
           <div className="sec-tag">./portfolio.sh --open</div>
           <h2 className="sec-h">
-            loading <span className="a">portfolio</span>
+            portfolio<span className="a">.md</span>
           </h2>
           <p className="sec-sub">
             制作・開発・講座・販売・発信まで、いま見せたい実績をターミナルログのように整理しました。

@@ -48,7 +48,7 @@ export default function Faq() {
         <div className="sec-head reveal">
           <div className="sec-tag">man asura</div>
           <h2 className="sec-h">
-            f.a.q<span className="a">.</span>
+            faq<span className="a">.md</span>
           </h2>
         </div>
 

@@ -26,7 +26,7 @@ export default function Sns() {
         <div className="sec-head reveal">
           <div className="sec-tag">ls ./social</div>
           <h2 className="sec-h">
-            3 ways to <span className="a">follow</span>
+            socials<span className="a">.json</span>
           </h2>
           <p className="sec-sub">
             SNS も役割を分けて運用し、動画、文章、短文で同じテーマを別の角度から届けています。

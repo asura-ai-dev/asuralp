@@ -24,7 +24,7 @@ export default function Video() {
         <div>
           <div className="sec-tag">ls ./videos</div>
           <h2 className="sec-h">
-            video <span className="a">queue</span>
+            videos<span className="a">.md</span>
           </h2>
         </div>
       </div>

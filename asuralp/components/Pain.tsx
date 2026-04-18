@@ -26,7 +26,7 @@ export default function Pain() {
         <div className="sec-head reveal">
           <div className="sec-tag">tail -f errors.log</div>
           <h2 className="sec-h">
-            ERROR を <span className="a">RESOLVING</span> に変える
+            resolving<span className="a">.log</span>
           </h2>
           <p className="sec-sub">
             問題をふわっとした悩みのままにせず、ターミナルに流れるログのように見える化します。
