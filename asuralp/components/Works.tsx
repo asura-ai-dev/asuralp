@@ -1,78 +1,128 @@
 const WORKS = [
   {
-    badge: "SAAS",
-    title: "OpsFlow | 問い合わせ自動化",
+    category: "Web制作",
+    title: "エステLP制作",
+    meta: "5万円",
     description:
-      "営業・CS の一次対応を AI が受け、要点を人に引き継ぐ運用を構築。返信速度と対応漏れを改善。",
-    metric: "reply time -78%",
+      "訴求整理からデザイン・実装まで対応したLP制作。見た目だけでなく、申込みにつながる導線まで含めて形にしました。",
+    previewType: "visual",
+    previewMain: "LP MOCK",
+    previewSub: "スクショ or モック画像",
+    tone: "peach",
   },
   {
-    badge: "LP",
-    title: "Launch Terminal | 新規LP制作",
+    category: "システム開発",
+    title: "シフト管理兼タイムカードシステム",
+    meta: "現場オペレーション向け",
     description:
-      "HTMLで作られていた世界観を Next.js へ移し、更新しやすい構成と再利用しやすい部品に置き換え。",
-    metric: "edit cost down",
+      "シフト確認と勤怠記録を分断せず、毎日の運用を一画面で回せるようにした業務システムです。",
+    previewType: "visual",
+    previewMain: "SYSTEM DEMO",
+    previewSub: "スクショ or デモ画像",
+    tone: "mint",
   },
   {
-    badge: "B2B",
-    title: "Signal Board | 社内オペレーション可視化",
+    category: "Claude Code導入講座",
+    title: "月1対面講座",
+    meta: "メンバー獲得済み",
     description:
-      "複数チャネルの通知を一箇所に集約し、エラーや優先度をターミナル風UIで一目で判断できるように設計。",
-    metric: "ops clarity up",
+      "Claude Codeを仕事にどう取り入れるかを、対面で伴走しながら伝える講座として展開しています。",
+    previewType: "visual",
+    previewMain: "OFFLINE CLASS",
+    previewSub: "写真 or アイコン",
+    tone: "peach",
   },
-];
+  {
+    category: "note販売",
+    title: "noteで Claude Code Skills 販売",
+    meta: "好評",
+    description:
+      "実際に使える形へ整理した知見を記事化し、学んだその日に試しやすいコンテンツとして届けています。",
+    previewType: "metric",
+    previewMain: "skills on sale",
+    previewSub: "reaction: good",
+    tone: "mint",
+  },
+  {
+    category: "YouTube",
+    title: "登録者1,400人",
+    meta: "収益化 2ヶ月で達成",
+    description:
+      "AIagentによって自律的に運用しています。",
+    previewType: "metric",
+    previewMain: "1,400 subscribers",
+    previewSub: "monetized in 2 months",
+    tone: "peach",
+  },
+] as const
 
 export default function Works() {
   return (
     <section className="section" id="works">
       <div className="wrap">
         <div className="sec-head reveal">
-          <div className="sec-tag">find ./works -type project</div>
+          <div className="sec-tag">./portfolio.sh --open</div>
           <h2 className="sec-h">
-            selected <span className="a">works</span>
+            loading <span className="a">portfolio</span>
           </h2>
           <p className="sec-sub">
-            実績はただ並べるのではなく、「何を変えたか」が伝わるように整理しています。
+            制作・開発・講座・販売・発信まで、いま見せたい実績をターミナルログのように整理しました。
           </p>
         </div>
 
-        <div className="works-grid">
-          {WORKS.map((work) => (
-            <article className="work reveal" key={work.title}>
-              <div className="work-img">
-                <div className="grid" />
-                <div className="glow" />
-                <div className="badge">{work.badge}</div>
-                <div className="name">{work.title.split(" | ")[0]}</div>
-              </div>
-              <div className="work-body">
-                <div className="work-tag">{work.badge} / PROJECT</div>
-                <div className="work-h">{work.title}</div>
-                <p className="work-d">{work.description}</p>
-                <div className="work-meta">
-                  <span>strategy · design · build</span>
-                  <span className="up">{work.metric}</span>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+        <div className="term works-terminal reveal">
+          <div className="term-bar">
+            <div className="dots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="path">~/asura/portfolio — latest.log — 132x40</div>
+            <div className="tabs">
+              <span className="act">works.tsx</span>
+              <span>captures/</span>
+              <span>results.md</span>
+            </div>
+          </div>
 
-        <div className="works-notes">
-          <article className="works-note reveal">
-            <h3>What changed</h3>
-            <p>
-              単発の制作物ではなく、あとから直せる構成に作り替えることで、更新コストと説明コストを一緒に下げています。
-            </p>
-          </article>
-          <article className="works-note reveal">
-            <h3>Why it matters</h3>
-            <p>
-              LPは公開した瞬間が完成ではなく、改善の出発点です。だからこそ再編集しやすさを最初から設計に含めます。
-            </p>
-          </article>
+          <div className="term-body works-terminal-body">
+            <span className="line out works-boot">&gt; LOADING portfolio...</span>
+
+            <div className="portfolio-list">
+              {WORKS.map((work) => (
+                <article
+                  className={`portfolio-entry portfolio-${work.tone} reveal`}
+                  key={work.category}
+                >
+                  <div className="portfolio-entry-head">
+                    <span>{work.category}</span>
+                    <span className="portfolio-entry-rule" aria-hidden="true" />
+                  </div>
+
+                  <div className="portfolio-entry-grid">
+                    <div className="portfolio-copy">
+                      <h3>{work.title}</h3>
+                      <p className="portfolio-meta">{work.meta}</p>
+                      <p className="portfolio-description">{work.description}</p>
+                    </div>
+
+                    <div
+                      className={`portfolio-preview portfolio-preview-${work.previewType}`}
+                    >
+                      <div className="portfolio-preview-main">
+                        {work.previewMain}
+                      </div>
+                      <div className="portfolio-preview-sub">
+                        {work.previewSub}
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
-  );
+  )
 }
