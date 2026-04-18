@@ -402,23 +402,49 @@ video {
   opacity: 0.72;
 }
 
-.ascii {
-  display: block;
-  width: fit-content;
+.ascii-wrap {
   max-width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
   margin: 18px 0;
-  font-family: var(--f-deco);
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ascii {
+  display: inline-block;
+  min-width: max-content;
+  margin: 18px 0;
+  font-family:
+    "SFMono-Regular",
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
   font-size: 12px;
-  line-height: 1.18;
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: 0;
   white-space: pre;
-  color: var(--peach);
-  text-shadow: 0 0 14px rgba(255, 176, 122, 0.45);
+  color: var(--peach-soft);
+  text-shadow: 0 0 6px rgba(255, 176, 122, 0.18);
   font-variant-ligatures: none;
+  font-feature-settings:
+    "liga" 0,
+    "calt" 0,
+    "kern" 0;
+  font-kerning: none;
+  text-rendering: auto;
+  -webkit-font-smoothing: auto;
 }
 
 .ascii-hero {
   margin-top: 22px;
+  margin-bottom: 0;
+  font-size: clamp(10px, 1.2vw, 14px);
+  line-height: 1.14;
 }
 
 .cursor {
@@ -1497,6 +1523,10 @@ video {
   .term-body {
     min-height: 420px;
     padding: 22px 18px 28px;
+  }
+
+  .ascii-hero {
+    font-size: clamp(9px, 2.4vw, 11px);
   }
 
   .term-bar {

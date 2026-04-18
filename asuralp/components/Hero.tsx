@@ -82,7 +82,7 @@ export default function Hero() {
       await sleep(240);
       await typeText(
         (value) => update("t2", value),
-        "> 寝ない従業員を手に入れよう。",
+        "> 寝ない従業員を手にいれる。",
         14,
       );
       if (!active) {
@@ -100,7 +100,7 @@ export default function Hero() {
       await sleep(220);
       await typeText(
         (value) => update("t4", value),
-        "> ASURA.AI が、営業・調査・運用を止まらず回す。人は判断と創造に集中できます。",
+        "> ASURA.AI が裏側の業務を休まず支え、あなたは企画や判断に集中できます。",
         12,
       );
       await sleep(240);
@@ -147,10 +147,12 @@ export default function Hero() {
             <span className="line out hero-copy">{typed.t2}</span>
 
             {showAscii ? (
-              <pre className="ascii ascii-hero">
-                {ASCII_ART}
-                {"\n"}A S U R A . A I
-              </pre>
+              <div className="ascii-wrap" aria-label="ASURA.AI ascii logo">
+                <pre className="ascii ascii-hero">
+                  {ASCII_ART}
+                  {"\n"}ASURA.AI
+                </pre>
+              </div>
             ) : null}
 
             {showSecondPrompt ? (
