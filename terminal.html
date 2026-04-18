@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@300;400;500;600&family=Major+Mono+Display&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700;800&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -28,8 +28,8 @@
         --glow: 0 0 20px rgba(127, 227, 168, 0.25);
         --scan: rgba(127, 227, 168, 0.03);
 
-        --f-mono: "JetBrains Mono", "IBM Plex Mono", monospace;
-        --f-deco: "Major Mono Display", monospace;
+        --f-mono: "JetBrains Mono", monospace;
+        --f-deco: "Fira Code", monospace;
       }
       [data-theme="light"] {
         --bg: #fbf7f0;
@@ -348,14 +348,24 @@
       }
 
       .ascii {
+        font-family: var(--f-deco);
         color: var(--peach);
         white-space: pre;
-        font-size: 11px;
-        line-height: 1.05;
+        font-size: 12px;
+        line-height: 1.18;
         letter-spacing: 0;
         margin: 18px 0;
-        text-shadow: 0 0 14px color-mix(in srgb, var(--peach) 60%, transparent);
+        padding-left: 0;
         display: none;
+        width: fit-content;
+        max-width: 100%;
+        overflow-x: auto;
+        font-variant-ligatures: none;
+        font-feature-settings:
+          "liga" 0,
+          "calt" 0;
+        text-rendering: optimizeSpeed;
+        text-shadow: 0 0 14px color-mix(in srgb, var(--peach) 60%, transparent);
       }
       .ascii.show {
         display: block;
@@ -1324,12 +1334,14 @@
           ></span>
           <span class="line out" id="t2"></span>
           <pre class="ascii" id="ascii">
-  ___    ____  __  _____  ___       ___    ____
- /   |  / __/ / / / __/ |/ _ |     / _ |  /  _/
-/ /| | _\ \  / /_/ /__ /    /     / __ | _/ /
-/_/ |_|/___/  \____\___//_/|_| () /_/ |_|/___/
-       solo · hacker · builder · since 2018
-</pre
+      _   _____ __  _______  ___      ___    ___
+     / | / ___// / / / __ \\/   |    /   |  /  _/
+    /  | \\__ \\/ / / / /_/ / /| |   / /| |  / /  
+   / /| |___/ / /_/ / _, _/ ___ |  / ___ |_/ /   
+  /_/ |_|____/\\____/_/ |_/_/  |_| /_/  |_/___/   
+
+                A S U R A . A I
+          </pre
           >
           <span class="line" id="l3" style="display: none"
             ><span class="prompt"
@@ -2132,24 +2144,24 @@
     <script>
       // ===== typing animation =====
       const seq = [
-        { el: "t1", text: "whoami", delay: 30, after: 300 },
+        { el: "t1", text: "cat ./hero.txt", delay: 30, after: 300 },
         {
           el: "t2",
-          text: "> asura — solo developer / ai agent operator / based in tokyo",
+          text: "> 寝ない従業員を手に入れよう。",
           delay: 12,
           after: 400,
           asciiAfter: true,
         },
         {
           el: "t3",
-          text: "cat ./mission.txt",
+          text: "cat ./why-asura.txt",
           delay: 30,
           after: 300,
           showLine: "l3",
         },
         {
           el: "t4",
-          text: "> 「会社を、ひとりで持つ。」AIエージェントと共に、24時間動く事業を運営する個人開発者です。",
+          text: "> ASURA.AI が、営業・調査・運用を止まらず回す。人は判断と創造に集中できます。",
           delay: 14,
           after: 500,
         },
