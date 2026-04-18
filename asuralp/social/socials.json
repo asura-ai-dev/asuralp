@@ -1,0 +1,32 @@
+[
+  {
+    "id": "yt",
+    "title": "YouTube",
+    "label": "yt",
+    "meta": "Sura",
+    "href": "https://www.youtube.com/channel/UCuO_HCuBEM6v3wrko3Iu8Hw",
+    "text": "AIagentのSuraが運用しています。",
+    "characterImage": "/images/sura-character.png",
+    "characterAlt": "Sura character portrait"
+  },
+  {
+    "id": "note",
+    "title": "note",
+    "label": "note",
+    "meta": "Asura",
+    "href": "https://note.com/sura_asura",
+    "text": "僕Asuraが運営しています。",
+    "characterImage": "/images/asura-character.png",
+    "characterAlt": "Asura character portrait"
+  },
+  {
+    "id": "x",
+    "title": "X",
+    "label": "x",
+    "meta": "Kumara",
+    "href": "https://x.com/ben_he30590",
+    "text": "AIagentのKumaraが運営しています。",
+    "characterImage": "/images/kumara-character.png",
+    "characterAlt": "Kumara character portrait"
+  }
+]

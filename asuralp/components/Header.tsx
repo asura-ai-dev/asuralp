@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import socials from "../social/socials.json";
 
-const SOCIALS = [
-  { href: "#sns", label: "yt" },
-  { href: "#sns", label: "note" },
-  { href: "#sns", label: "x" },
-];
+type Social = {
+  href: string;
+  label: string;
+};
+
+const SOCIALS = socials as Social[];
 
 export default function Header() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
@@ -49,7 +51,13 @@ export default function Header() {
         </div>
         <div className="nav-socials" aria-label="social links">
           {SOCIALS.map((social) => (
-            <Link className="nav-social" href={social.href} key={social.label}>
+            <Link
+              className="nav-social"
+              href={social.href}
+              key={social.label}
+              rel="noreferrer"
+              target="_blank"
+            >
               {social.label}
             </Link>
           ))}

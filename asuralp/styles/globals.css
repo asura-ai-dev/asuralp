@@ -1461,13 +1461,24 @@ video {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   margin-top: 30px;
+  padding-top: 20px;
+  padding-right: 36px;
+  overflow: visible;
+}
+
+.sns-term {
+  overflow: visible;
+}
+
+.sns-term .term-body,
+.sns-term .sns-grid {
+  overflow: visible;
 }
 
 .sns-card {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 24px;
+  position: relative;
+  min-height: 290px;
+  overflow: visible;
   transition:
     transform 0.3s ease,
     border-color 0.3s ease,
@@ -1478,6 +1489,103 @@ video {
   transform: translateY(-4px);
   border-color: var(--peach);
   box-shadow: 0 0 24px rgba(255, 176, 122, 0.18);
+}
+
+.sns-card-base {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  padding: 24px;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease,
+    filter 0.35s ease;
+}
+
+.sns-card:hover .sns-card-base,
+.sns-card:focus-within .sns-card-base {
+  opacity: 0.88;
+  transform: translateX(-10px);
+  filter: none;
+}
+
+.sns-card:hover .sns-character,
+.sns-card:focus-within .sns-character {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.sns-card:hover .sns-character-img,
+.sns-card:focus-within .sns-character-img {
+  transform: scale(1);
+}
+
+.sns-character {
+  position: absolute;
+  top: -92px;
+  right: -122px;
+  width: 248px;
+  height: 390px;
+  opacity: 0;
+  transform: translate3d(18px, 10px, 0) scale(0.94);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.sns-character-yt {
+  top: -88px;
+  right: -118px;
+  width: 244px;
+  height: 384px;
+}
+
+.sns-character-glow {
+  position: absolute;
+  top: 78px;
+  right: 40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 999px;
+  filter: blur(22px);
+  opacity: 0.46;
+}
+
+.sns-character-glow-yt {
+  background: radial-gradient(circle, rgba(190, 255, 218, 0.68), rgba(127, 227, 168, 0.18) 66%, transparent 100%);
+}
+
+.sns-character-glow-note {
+  background: radial-gradient(circle, rgba(255, 209, 171, 0.82), rgba(255, 176, 122, 0.18) 66%, transparent 100%);
+}
+
+.sns-character-glow-x {
+  background: radial-gradient(circle, rgba(255, 238, 194, 0.82), rgba(255, 215, 167, 0.18) 68%, transparent 100%);
+}
+
+.sns-character-img {
+  position: absolute;
+  inset: 0;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 1;
+  filter:
+    drop-shadow(0 18px 24px rgba(0, 0, 0, 0.34));
+  transform: scale(0.94);
+  transition:
+    transform 0.35s ease,
+    opacity 0.35s ease;
+}
+
+.sns-character-img-yt {
+  background-position: center top;
+  background-size: 166% auto;
 }
 
 .sns-icon {
@@ -2122,6 +2230,37 @@ video {
   .pf-grid,
   .sns-grid {
     grid-template-columns: 1fr;
+  }
+
+  .sns-card {
+    min-height: 260px;
+  }
+
+  .sns-card-base {
+    padding: 22px 18px;
+  }
+
+  .sns-character {
+    top: -42px;
+    right: -54px;
+    width: 168px;
+    height: 252px;
+    opacity: 0;
+    transform: translate3d(12px, 8px, 0) scale(0.94);
+  }
+
+  .sns-character-yt {
+    top: -40px;
+    right: -48px;
+    width: 166px;
+    height: 248px;
+  }
+
+  .sns-character-glow {
+    top: 58px;
+    right: 18px;
+    width: 92px;
+    height: 92px;
   }
 
   .portfolio-entry {
