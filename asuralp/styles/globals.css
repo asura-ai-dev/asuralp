@@ -1044,12 +1044,42 @@ video {
   letter-spacing: 0.08em;
 }
 
-.portfolio-list {
-  display: grid;
-  gap: 18px;
+.portfolio-marquee {
+  position: relative;
+  overflow: hidden;
+  padding: 8px 0 10px;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    rgba(0, 0, 0, 1) 8%,
+    rgba(0, 0, 0, 1) 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    rgba(0, 0, 0, 1) 8%,
+    rgba(0, 0, 0, 1) 92%,
+    transparent 100%
+  );
+}
+
+.portfolio-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: portfolioLoopReverse 24s linear infinite;
+  will-change: transform;
+}
+
+.portfolio-marquee-group {
+  display: flex;
+  flex-shrink: 0;
+  gap: 22px;
+  padding-right: 22px;
 }
 
 .portfolio-entry {
+  flex: 0 0 min(420px, calc(100vw - 56px));
   padding: 22px 22px 24px;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -1093,8 +1123,8 @@ video {
 
 .portfolio-entry-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.9fr);
-  gap: 20px;
+  grid-template-columns: 1fr;
+  gap: 16px;
   align-items: stretch;
 }
 
@@ -1130,7 +1160,7 @@ video {
   display: grid;
   align-content: center;
   gap: 10px;
-  min-height: 168px;
+  min-height: 146px;
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -1928,6 +1958,16 @@ video {
   }
 }
 
+@keyframes portfolioLoopReverse {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal,
   .reveal.in {
@@ -1984,6 +2024,27 @@ video {
   .video-marquee-track {
     animation-duration: 32s;
   }
+
+  .portfolio-marquee {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--mint) transparent;
+  }
+
+  .portfolio-marquee::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .portfolio-marquee::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--mint);
+  }
+
+  .portfolio-marquee-track {
+    animation-duration: 40s;
+  }
 }
 
 @media (max-width: 760px) {
@@ -2030,7 +2091,6 @@ video {
   }
 
   .svc-grid,
-  .portfolio-entry-grid,
   .pf-grid,
   .sns-grid {
     grid-template-columns: 1fr;

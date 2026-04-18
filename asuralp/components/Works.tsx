@@ -88,37 +88,46 @@ export default function Works() {
           <div className="term-body works-terminal-body">
             <span className="line out works-boot">&gt; LOADING portfolio...</span>
 
-            <div className="portfolio-list">
-              {WORKS.map((work) => (
-                <article
-                  className={`portfolio-entry portfolio-${work.tone} reveal`}
-                  key={work.category}
-                >
-                  <div className="portfolio-entry-head">
-                    <span>{work.category}</span>
-                    <span className="portfolio-entry-rule" aria-hidden="true" />
-                  </div>
+            <div className="portfolio-marquee">
+              <div className="portfolio-marquee-track">
+                {[0, 1].map((copyIndex) => (
+                  <div
+                    aria-hidden={copyIndex === 1}
+                    className="portfolio-marquee-group"
+                    key={copyIndex}
+                  >
+                    {WORKS.map((work) => (
+                      <article
+                        className={`portfolio-entry portfolio-${work.tone} reveal`}
+                        key={`${copyIndex}-${work.category}`}
+                      >
+                        <div className="portfolio-entry-head">
+                          <span>{work.category}</span>
+                          <span className="portfolio-entry-rule" aria-hidden="true" />
+                        </div>
 
-                  <div className="portfolio-entry-grid">
-                    <div className="portfolio-copy">
-                      <h3>{work.title}</h3>
-                      <p className="portfolio-meta">{work.meta}</p>
-                      <p className="portfolio-description">{work.description}</p>
-                    </div>
+                        <div className="portfolio-entry-grid">
+                          <div className="portfolio-copy">
+                            <h3>{work.title}</h3>
+                            <p className="portfolio-meta">{work.meta}</p>
+                          </div>
 
-                    <div
-                      className={`portfolio-preview portfolio-preview-${work.previewType}`}
-                    >
-                      <div className="portfolio-preview-main">
-                        {work.previewMain}
-                      </div>
-                      <div className="portfolio-preview-sub">
-                        {work.previewSub}
-                      </div>
-                    </div>
+                          <div
+                            className={`portfolio-preview portfolio-preview-${work.previewType}`}
+                          >
+                            <div className="portfolio-preview-main">
+                              {work.previewMain}
+                            </div>
+                            <div className="portfolio-preview-sub">
+                              {work.previewSub}
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
                   </div>
-                </article>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
