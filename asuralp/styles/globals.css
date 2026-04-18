@@ -891,6 +891,30 @@ video {
   font-size: 11px;
 }
 
+.section-term {
+  margin-top: 30px;
+}
+
+.section-term-body {
+  min-height: 0;
+}
+
+.section-term .svc-grid,
+.section-term .pf-grid,
+.section-term .sns-grid,
+.section-term .faq {
+  margin-top: 0;
+}
+
+.video-term-body {
+  padding-inline: 0;
+  padding-bottom: 32px;
+}
+
+.video-term-body .video-marquee {
+  padding-bottom: 0;
+}
+
 .hscroll-sec {
   padding-top: clamp(72px, 8vw, 120px);
 }
@@ -2084,6 +2108,10 @@ video {
     width: 100%;
     margin-left: 0;
     overflow-x: auto;
+  }
+
+  .video-term-body {
+    padding-inline: 0;
   }
 
   .sec-h {

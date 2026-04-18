@@ -43,18 +43,36 @@ export default function Service() {
           </p>
         </div>
 
-        <div className="svc-grid">
-          {SERVICES.map((service) => (
-            <article className="svc reveal" key={service.id}>
-              <div className="svc-id">{service.id}</div>
-              <h3>{service.title}</h3>
-              <div className="svc-copy">
-                <p className="svc-lead">{service.lead}</p>
-                <p>{service.description}</p>
-              </div>
-              {service.meta ? <p className="svc-meta">{service.meta}</p> : null}
-            </article>
-          ))}
+        <div className="term section-term reveal">
+          <div className="term-bar">
+            <div className="dots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="path">~/asura/services/services.json</div>
+            <div className="tabs" aria-hidden="true">
+              <span className="act">services.json</span>
+              <span>pricing.md</span>
+              <span>delivery.log</span>
+            </div>
+          </div>
+
+          <div className="term-body section-term-body">
+            <div className="svc-grid">
+              {SERVICES.map((service) => (
+                <article className="svc reveal" key={service.id}>
+                  <div className="svc-id">{service.id}</div>
+                  <h3>{service.title}</h3>
+                  <div className="svc-copy">
+                    <p className="svc-lead">{service.lead}</p>
+                    <p>{service.description}</p>
+                  </div>
+                  {service.meta ? <p className="svc-meta">{service.meta}</p> : null}
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

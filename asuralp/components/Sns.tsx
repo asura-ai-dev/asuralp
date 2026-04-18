@@ -33,18 +33,36 @@ export default function Sns() {
           </p>
         </div>
 
-        <div className="sns-grid">
-          {CHANNELS.map((channel) => (
-            <article className="sns-card reveal" key={channel.id}>
-              <div className={`sns-icon sns-${channel.id}`}>{channel.title[0]}</div>
-              <div className="sns-meta">{channel.meta}</div>
-              <h3>{channel.title}</h3>
-              <p>{channel.text}</p>
-              <a className="btn ghost" href="#cta">
-                open {channel.id}
-              </a>
-            </article>
-          ))}
+        <div className="term section-term reveal">
+          <div className="term-bar">
+            <div className="dots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="path">~/asura/social/socials.json</div>
+            <div className="tabs" aria-hidden="true">
+              <span className="act">socials.json</span>
+              <span>content-plan.md</span>
+              <span>links.log</span>
+            </div>
+          </div>
+
+          <div className="term-body section-term-body">
+            <div className="sns-grid">
+              {CHANNELS.map((channel) => (
+                <article className="sns-card reveal" key={channel.id}>
+                  <div className={`sns-icon sns-${channel.id}`}>{channel.title[0]}</div>
+                  <div className="sns-meta">{channel.meta}</div>
+                  <h3>{channel.title}</h3>
+                  <p>{channel.text}</p>
+                  <a className="btn ghost" href="#cta">
+                    open {channel.id}
+                  </a>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

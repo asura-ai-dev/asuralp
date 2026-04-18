@@ -52,40 +52,58 @@ export default function Faq() {
           </h2>
         </div>
 
-        <div className="faq reveal">
-          {FAQ_ITEMS.map((item, index) => {
-            const isOpen = openIndex === index;
-            const answerId = `faq-answer-${index}`;
-            const questionId = `faq-question-${index}`;
+        <div className="term section-term reveal">
+          <div className="term-bar">
+            <div className="dots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="path">~/asura/docs/faq.md</div>
+            <div className="tabs" aria-hidden="true">
+              <span className="act">faq.md</span>
+              <span>pricing.md</span>
+              <span>support.log</span>
+            </div>
+          </div>
 
-            return (
-              <div className="faq-item" key={item.question}>
-                <button
-                  aria-controls={answerId}
-                  aria-expanded={isOpen}
-                  className={`faq-q${isOpen ? " open" : ""}`}
-                  id={questionId}
-                  onClick={() => handleToggle(index)}
-                  type="button"
-                >
-                  <span className="q">{item.question}</span>
-                  <span aria-hidden="true" className="t">
-                    {isOpen ? "[-]" : "[+]"}
-                  </span>
-                </button>
+          <div className="term-body section-term-body">
+            <div className="faq">
+              {FAQ_ITEMS.map((item, index) => {
+                const isOpen = openIndex === index;
+                const answerId = `faq-answer-${index}`;
+                const questionId = `faq-question-${index}`;
 
-                <div
-                  aria-hidden={!isOpen}
-                  aria-labelledby={questionId}
-                  className="faq-a"
-                  id={answerId}
-                  role="region"
-                >
-                  {item.answer}
-                </div>
-              </div>
-            );
-          })}
+                return (
+                  <div className="faq-item" key={item.question}>
+                    <button
+                      aria-controls={answerId}
+                      aria-expanded={isOpen}
+                      className={`faq-q${isOpen ? " open" : ""}`}
+                      id={questionId}
+                      onClick={() => handleToggle(index)}
+                      type="button"
+                    >
+                      <span className="q">{item.question}</span>
+                      <span aria-hidden="true" className="t">
+                        {isOpen ? "[-]" : "[+]"}
+                      </span>
+                    </button>
+
+                    <div
+                      aria-hidden={!isOpen}
+                      aria-labelledby={questionId}
+                      className="faq-a"
+                      id={answerId}
+                      role="region"
+                    >
+                      {item.answer}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </section>
