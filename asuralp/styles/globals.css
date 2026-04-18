@@ -903,36 +903,6 @@ video {
   margin-bottom: 24px;
 }
 
-.hscroll-arrows {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.arrow-btn {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--bg-2);
-  color: var(--fg);
-  transition:
-    transform 0.2s ease,
-    background-color 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
-  cursor: pointer;
-}
-
-.arrow-btn:hover {
-  transform: translateY(-1px);
-  border-color: var(--mint);
-  color: var(--bg);
-  background: var(--mint);
-}
-
 .hscroll {
   display: flex;
   gap: 22px;
@@ -952,6 +922,40 @@ video {
   background: var(--mint);
 }
 
+.video-marquee {
+  position: relative;
+  overflow: hidden;
+  padding: 8px 0 10px;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    rgba(0, 0, 0, 1) 8%,
+    rgba(0, 0, 0, 1) 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    rgba(0, 0, 0, 1) 8%,
+    rgba(0, 0, 0, 1) 92%,
+    transparent 100%
+  );
+}
+
+.video-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: videoQueueLoop 18s linear infinite;
+  will-change: transform;
+}
+
+.video-marquee-group {
+  display: flex;
+  flex-shrink: 0;
+  gap: 22px;
+  padding-right: 22px;
+}
+
 .video-card,
 .work,
 .sns-card,
@@ -964,7 +968,7 @@ video {
 .video-card {
   flex: 0 0 min(340px, calc(100vw - 56px));
   padding: 18px;
-  scroll-snap-align: start;
+  box-shadow: 0 16px 40px -28px rgba(0, 0, 0, 0.9);
 }
 
 .video-card-screen {
@@ -981,6 +985,16 @@ video {
     var(--bg-3);
   background-size: 24px 24px, 24px 24px, auto, auto;
   overflow: hidden;
+}
+
+.video-card-screen::after {
+  content: "QUEUE_EMPTY";
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  color: rgba(127, 227, 168, 0.35);
+  font-size: 10px;
+  letter-spacing: 0.18em;
 }
 
 .video-card-badge {
@@ -1000,10 +1014,11 @@ video {
   padding: 0 18px;
   color: var(--fg);
   font-family: var(--f-deco);
-  font-size: 28px;
+  font-size: clamp(28px, 4vw, 34px);
   line-height: 1.2;
   text-align: center;
   text-transform: lowercase;
+  text-shadow: 0 0 18px rgba(127, 227, 168, 0.14);
 }
 
 .video-card-meta {
@@ -1859,6 +1874,12 @@ video {
   }
 }
 
+@keyframes videoQueueLoop {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal,
   .reveal.in {
@@ -1893,6 +1914,27 @@ video {
   .pain-entry::after {
     animation: none;
     opacity: 0;
+  }
+
+  .video-marquee {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--mint) transparent;
+  }
+
+  .video-marquee::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .video-marquee::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--mint);
+  }
+
+  .video-marquee-track {
+    animation-duration: 32s;
   }
 }
 

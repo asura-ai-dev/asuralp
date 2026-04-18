@@ -1,30 +1,23 @@
-"use client";
-
-import { useRef } from "react";
-
 const VIDEO_ITEMS = [
-  "coming soon / launch trailer",
-  "terminal mode demo / product walk-through",
-  "agent workflow / behind the scenes",
-  "customer story / before and after",
+  {
+    slot: "slot 01",
+    status: "launch trailer / pending",
+  },
+  {
+    slot: "slot 02",
+    status: "product walkthrough / pending",
+  },
+  {
+    slot: "slot 03",
+    status: "agent workflow / pending",
+  },
+  {
+    slot: "slot 04",
+    status: "customer story / pending",
+  },
 ];
 
 export default function Video() {
-  const trackRef = useRef<HTMLDivElement | null>(null);
-
-  const scrollByCard = (direction: number) => {
-    const track = trackRef.current;
-
-    if (!track) {
-      return;
-    }
-
-    track.scrollBy({
-      left: direction * 340,
-      behavior: "smooth",
-    });
-  };
-
   return (
     <section className="section hscroll-sec" id="video">
       <div className="hscroll-head reveal wrap">
@@ -33,43 +26,32 @@ export default function Video() {
           <h2 className="sec-h">
             video <span className="a">queue</span>
           </h2>
-          <p className="sec-sub">
-            次に出すコンテンツもターミナルの世界観で統一し、横に流しながら見せる構成にしています。
-          </p>
-        </div>
-        <div className="hscroll-arrows">
-          <button
-            aria-label="scroll videos left"
-            className="arrow-btn"
-            onClick={() => scrollByCard(-1)}
-            type="button"
-          >
-            ←
-          </button>
-          <button
-            aria-label="scroll videos right"
-            className="arrow-btn"
-            onClick={() => scrollByCard(1)}
-            type="button"
-          >
-            →
-          </button>
         </div>
       </div>
 
-      <div className="hscroll video-scroll reveal" ref={trackRef}>
-        {VIDEO_ITEMS.map((item, index) => (
-          <article className="video-card" key={item}>
-            <div className="video-card-screen">
-              <span className="video-card-badge">COMING SOON</span>
-              <div className="video-card-title">{item}</div>
+      <div className="video-marquee reveal">
+        <div className="video-marquee-track">
+          {[0, 1].map((copyIndex) => (
+            <div
+              aria-hidden={copyIndex === 1}
+              className="video-marquee-group"
+              key={copyIndex}
+            >
+              {VIDEO_ITEMS.map((item) => (
+                <article className="video-card" key={`${copyIndex}-${item.slot}`}>
+                  <div className="video-card-screen">
+                    <span className="video-card-badge">COMING SOON</span>
+                    <div className="video-card-title">coming soon</div>
+                  </div>
+                  <div className="video-card-meta">
+                    <span>{item.slot}</span>
+                    <span>{item.status}</span>
+                  </div>
+                </article>
+              ))}
             </div>
-            <div className="video-card-meta">
-              <span>slot 0{index + 1}</span>
-              <span>render pending</span>
-            </div>
-          </article>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
