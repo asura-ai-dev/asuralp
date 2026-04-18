@@ -41,10 +41,12 @@ export default function Header() {
       </div>
 
       <div className="nav-r">
-        <Link href="#service">service</Link>
-        <Link href="#works">works</Link>
-        <Link href="#profile">profile</Link>
-        <Link href="#faq">faq</Link>
+        <div className="nav-links">
+          <Link href="#service">service</Link>
+          <Link href="#works">works</Link>
+          <Link href="#profile">profile</Link>
+          <Link href="#faq">faq</Link>
+        </div>
         <div className="nav-socials" aria-label="social links">
           {SOCIALS.map((social) => (
             <Link className="nav-social" href={social.href} key={social.label}>

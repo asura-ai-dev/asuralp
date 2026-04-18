@@ -43,7 +43,7 @@ export default function Faq() {
   };
 
   return (
-    <section id="faq">
+    <section className="section" id="faq">
       <div className="wrap">
         <div className="sec-head reveal">
           <div className="sec-tag">man asura</div>

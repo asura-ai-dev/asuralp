@@ -218,6 +218,12 @@ video {
   font-size: 12px;
 }
 
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .nav-title {
   font-size: 12px;
   color: var(--fg-d);
@@ -1476,7 +1482,7 @@ video {
     padding-inline: 12px;
   }
 
-  .nav-r a:not(:last-child) {
+  .nav-links a:not(:last-child) {
     display: none;
   }
 
