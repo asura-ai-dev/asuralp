@@ -1,0 +1,2278 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>asura@dev:~$ ./solo-hacker.sh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=IBM+Plex+Mono:wght@300;400;500;600&family=Major+Mono+Display&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --peach: #ffb07a;
+        --peach-d: #e07a3b;
+        --peach-soft: #ffe4cc;
+        --mint: #7fe3a8;
+        --mint-d: #2e8b57;
+        --mint-soft: #cfebd8;
+
+        --bg: #0a0d0b;
+        --bg-2: #0f1411;
+        --bg-3: #151b17;
+        --fg: #dfe8e1;
+        --fg-d: #7a8a80;
+        --line: rgba(127, 227, 168, 0.14);
+        --glow: 0 0 20px rgba(127, 227, 168, 0.25);
+        --scan: rgba(127, 227, 168, 0.03);
+
+        --f-mono: "JetBrains Mono", "IBM Plex Mono", monospace;
+        --f-deco: "Major Mono Display", monospace;
+      }
+      [data-theme="light"] {
+        --bg: #fbf7f0;
+        --bg-2: #f3ebdc;
+        --bg-3: #fff4ea;
+        --fg: #1c1a17;
+        --fg-d: #6b6356;
+        --line: rgba(28, 26, 23, 0.14);
+        --glow: 0 0 16px rgba(224, 122, 59, 0.2);
+        --scan: rgba(224, 122, 59, 0.03);
+        --peach: #e07a3b;
+        --mint: #2e8b57;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--f-mono);
+        background: var(--bg);
+        color: var(--fg);
+        font-size: 14px;
+        line-height: 1.7;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        transition:
+          background 0.5s,
+          color 0.5s;
+      }
+      a {
+        color: var(--mint);
+        text-decoration: none;
+      }
+      a:hover {
+        color: var(--peach);
+      }
+
+      /* CRT scanlines + grain */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        pointer-events: none;
+        background: repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 2px,
+          var(--scan) 2px,
+          var(--scan) 3px
+        );
+        mix-blend-mode: overlay;
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 201;
+        pointer-events: none;
+        background: radial-gradient(
+          ellipse at center,
+          transparent 60%,
+          rgba(0, 0, 0, 0.4) 100%
+        );
+      }
+      [data-theme="light"] body::after {
+        background: radial-gradient(
+          ellipse at center,
+          transparent 60%,
+          rgba(0, 0, 0, 0.08) 100%
+        );
+      }
+
+      /* ambient bg blobs */
+      .bg-blobs {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        overflow: hidden;
+      }
+      .bg-blobs::before,
+      .bg-blobs::after {
+        content: "";
+        position: absolute;
+        width: 60vw;
+        height: 60vw;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.18;
+      }
+      .bg-blobs::before {
+        background: var(--peach);
+        top: -20vw;
+        left: -10vw;
+        animation: float 18s ease-in-out infinite;
+      }
+      .bg-blobs::after {
+        background: var(--mint);
+        bottom: -20vw;
+        right: -10vw;
+        animation: float 22s ease-in-out infinite reverse;
+      }
+      @keyframes float {
+        50% {
+          transform: translate(8vw, 4vw) scale(1.1);
+        }
+      }
+
+      /* ========= NAV ========= */
+      .nav {
+        position: fixed;
+        top: 14px;
+        left: 14px;
+        right: 14px;
+        z-index: 50;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 16px;
+        background: color-mix(in srgb, var(--bg-2) 80%, transparent);
+        backdrop-filter: blur(14px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--glow);
+      }
+      .nav-l {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .dots {
+        display: flex;
+        gap: 6px;
+      }
+      .dots span {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: var(--bg-3);
+        border: 1px solid var(--line);
+      }
+      .dots span:nth-child(1) {
+        background: #ff5f57;
+      }
+      .dots span:nth-child(2) {
+        background: var(--peach);
+      }
+      .dots span:nth-child(3) {
+        background: var(--mint);
+      }
+      .nav-title {
+        font-size: 12px;
+        color: var(--fg-d);
+      }
+      .nav-title b {
+        color: var(--fg);
+      }
+      .nav-r {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+      }
+      .nav-r a {
+        color: var(--fg-d);
+        padding: 4px 10px;
+        border-radius: 4px;
+      }
+      .nav-r a:hover {
+        color: var(--mint);
+        background: var(--bg-3);
+      }
+      .theme-tog {
+        font-family: var(--f-mono);
+        font-size: 11px;
+        background: transparent;
+        color: var(--fg);
+        border: 1px solid var(--line);
+        padding: 6px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .theme-tog:hover {
+        background: var(--mint);
+        color: var(--bg);
+        border-color: var(--mint);
+      }
+
+      @media (max-width: 760px) {
+        .nav-r a:not(:last-child) {
+          display: none;
+        }
+      }
+
+      /* ========= HERO / TERMINAL ========= */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 90px 24px 60px;
+      }
+      .term {
+        width: 100%;
+        max-width: 1080px;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        box-shadow:
+          var(--glow),
+          0 40px 100px -30px rgba(0, 0, 0, 0.6);
+        overflow: hidden;
+        position: relative;
+      }
+      .term-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--line);
+        background: var(--bg-3);
+      }
+      .term-bar .dots span {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+      }
+      .term-bar .dots span:nth-child(1) {
+        background: #ff5f57;
+      }
+      .term-bar .dots span:nth-child(2) {
+        background: var(--peach);
+      }
+      .term-bar .dots span:nth-child(3) {
+        background: var(--mint);
+      }
+      .term-bar .path {
+        font-size: 11px;
+        color: var(--fg-d);
+        margin-left: 4px;
+      }
+      .term-bar .tabs {
+        margin-left: auto;
+        display: flex;
+        gap: 4px;
+        font-size: 11px;
+        color: var(--fg-d);
+      }
+      .term-bar .tabs span {
+        padding: 3px 8px;
+        border-radius: 3px;
+        background: var(--bg-2);
+      }
+      .term-bar .tabs span.act {
+        color: var(--mint);
+        background: color-mix(in srgb, var(--mint) 14%, transparent);
+      }
+
+      .term-body {
+        padding: 28px 32px 40px;
+        font-size: 14px;
+        min-height: 480px;
+      }
+      .line {
+        display: block;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .prompt {
+        color: var(--mint);
+      }
+      .prompt .u {
+        color: var(--peach);
+      }
+      .prompt .h {
+        color: var(--fg);
+      }
+      .prompt .p {
+        color: var(--fg-d);
+      }
+      .cmd {
+        color: var(--fg);
+      }
+      .out {
+        color: var(--fg-d);
+      }
+      .ok {
+        color: var(--mint);
+      }
+      .warn {
+        color: var(--peach);
+      }
+      .dim {
+        color: var(--fg-d);
+        opacity: 0.7;
+      }
+      .cursor {
+        display: inline-block;
+        width: 9px;
+        height: 1.1em;
+        background: var(--mint);
+        vertical-align: -3px;
+        margin-left: 2px;
+        animation: blink 1s steps(2) infinite;
+        box-shadow: 0 0 12px var(--mint);
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      .ascii {
+        color: var(--peach);
+        white-space: pre;
+        font-size: 11px;
+        line-height: 1.05;
+        letter-spacing: 0;
+        margin: 18px 0;
+        text-shadow: 0 0 14px color-mix(in srgb, var(--peach) 60%, transparent);
+        display: none;
+      }
+      .ascii.show {
+        display: block;
+        animation: appear 0.4s ease;
+      }
+      @keyframes appear {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+      }
+
+      .term-cta {
+        display: none;
+        margin-top: 28px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .term-cta.show {
+        display: flex;
+        animation: appear 0.5s;
+      }
+      .btn {
+        font-family: var(--f-mono);
+        font-size: 13px;
+        padding: 10px 18px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.25s;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--fg);
+      }
+      .btn.primary {
+        background: var(--mint);
+        color: var(--bg);
+        border-color: var(--mint);
+        font-weight: 600;
+      }
+      .btn.primary:hover {
+        background: var(--peach);
+        border-color: var(--peach);
+        box-shadow: 0 0 24px var(--peach);
+      }
+      .btn.ghost:hover {
+        border-color: var(--mint);
+        color: var(--mint);
+        box-shadow: var(--glow);
+      }
+
+      /* ========= SECTION shared ========= */
+      section {
+        padding: 120px 0;
+        position: relative;
+      }
+      .wrap {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 32px;
+      }
+      .sec-head {
+        margin-bottom: 50px;
+      }
+      .sec-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: var(--mint);
+        letter-spacing: 0.18em;
+        padding: 5px 10px;
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        background: color-mix(in srgb, var(--mint) 6%, transparent);
+      }
+      .sec-tag::before {
+        content: "$";
+        color: var(--peach);
+      }
+      .sec-h {
+        font-family: var(--f-deco);
+        font-size: clamp(38px, 6vw, 76px);
+        letter-spacing: -0.02em;
+        line-height: 1;
+        margin-top: 18px;
+        color: var(--fg);
+        text-transform: lowercase;
+      }
+      .sec-h .a {
+        color: var(--peach);
+      }
+      .sec-h .b {
+        color: var(--mint);
+      }
+      .sec-sub {
+        color: var(--fg-d);
+        margin-top: 14px;
+        max-width: 600px;
+        font-size: 14px;
+        line-height: 1.85;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .reveal.in {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* ========= CONCEPT (terminal log style) ========= */
+      .concept-box {
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 30px;
+        margin-top: 30px;
+        box-shadow: var(--glow);
+      }
+      .log {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.95;
+      }
+      .log .ts {
+        color: var(--fg-d);
+      }
+      .log .lv {
+        color: var(--mint);
+      }
+      .log .lv.w {
+        color: var(--peach);
+      }
+      .log .msg {
+        color: var(--fg);
+      }
+
+      .bento {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-top: 30px;
+      }
+      .bento .cell {
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        transition:
+          transform 0.4s,
+          border-color 0.4s;
+      }
+      .bento .cell:hover {
+        transform: translateY(-4px);
+        border-color: var(--mint);
+      }
+      .bento .cell::before {
+        content: attr(data-n);
+        position: absolute;
+        top: 14px;
+        right: 16px;
+        font-size: 11px;
+        color: var(--fg-d);
+      }
+      .cell h4 {
+        font-size: 13px;
+        color: var(--peach);
+        margin-bottom: 12px;
+        letter-spacing: 0.05em;
+      }
+      .cell h4::before {
+        content: "# ";
+        color: var(--fg-d);
+      }
+      .cell p {
+        font-size: 13px;
+        color: var(--fg-d);
+        line-height: 1.85;
+      }
+      @media (max-width: 820px) {
+        .bento {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ========= PAIN ========= */
+      .pain-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1px;
+        background: var(--line);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 30px;
+      }
+      .pain-row {
+        background: var(--bg-2);
+        padding: 24px 28px;
+        display: grid;
+        grid-template-columns: 80px 1fr 1fr;
+        gap: 26px;
+        align-items: center;
+        transition: background 0.3s;
+      }
+      .pain-row:hover {
+        background: var(--bg-3);
+      }
+      .pain-row .err {
+        font-size: 12px;
+        color: var(--peach);
+        font-weight: 600;
+      }
+      .pain-row .err::before {
+        content: "ERR";
+        display: block;
+        color: var(--fg-d);
+        font-weight: 400;
+        font-size: 10px;
+        letter-spacing: 0.2em;
+      }
+      .pain-row h3 {
+        font-size: 18px;
+        color: var(--fg);
+        font-weight: 500;
+      }
+      .pain-row .fix {
+        font-size: 12px;
+        color: var(--fg-d);
+        line-height: 1.85;
+      }
+      .pain-row .fix::before {
+        content: "→ ./fix.sh ";
+        color: var(--mint);
+      }
+      @media (max-width: 820px) {
+        .pain-row {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+      }
+
+      /* ========= SERVICE ========= */
+      .svc-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+        margin-top: 30px;
+      }
+      .svc {
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 28px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s;
+      }
+      .svc::after {
+        content: "";
+        position: absolute;
+        inset: auto -30% -50% auto;
+        width: 60%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: radial-gradient(var(--mint), transparent 70%);
+        opacity: 0;
+        transition: opacity 0.5s;
+      }
+      .svc:nth-child(2)::after {
+        background: radial-gradient(var(--peach), transparent 70%);
+      }
+      .svc:nth-child(3)::after {
+        background: radial-gradient(var(--peach), transparent 70%);
+      }
+      .svc:hover {
+        transform: translateY(-4px);
+        border-color: var(--mint);
+      }
+      .svc:hover::after {
+        opacity: 0.25;
+      }
+      .svc > * {
+        position: relative;
+        z-index: 1;
+      }
+      .svc-id {
+        font-size: 11px;
+        color: var(--fg-d);
+        letter-spacing: 0.18em;
+      }
+      .svc h3 {
+        font-size: 22px;
+        color: var(--peach);
+        margin: 14px 0 12px;
+        font-weight: 500;
+      }
+      .svc h3 .b {
+        color: var(--mint);
+      }
+      .svc p {
+        font-size: 13px;
+        color: var(--fg-d);
+        line-height: 1.9;
+      }
+      .svc-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 18px;
+      }
+      .svc-tags span {
+        font-size: 10px;
+        padding: 4px 8px;
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        color: var(--fg-d);
+      }
+      @media (max-width: 820px) {
+        .svc-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ========= H-SCROLL sections ========= */
+      .hscroll-sec {
+        padding: 120px 0 60px;
+      }
+      .hscroll-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding: 0 32px;
+        max-width: 1280px;
+        margin: 0 auto 40px;
+      }
+      .hscroll-arrows {
+        display: flex;
+        gap: 8px;
+      }
+      .arrow-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 1px solid var(--line);
+        background: var(--bg-2);
+        color: var(--fg);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        font-size: 16px;
+        transition: all 0.25s;
+      }
+      .arrow-btn:hover {
+        background: var(--mint);
+        color: var(--bg);
+        border-color: var(--mint);
+        box-shadow: var(--glow);
+      }
+
+      .hscroll {
+        display: flex;
+        gap: 22px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 8px 32px 28px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--mint) transparent;
+      }
+      .hscroll::-webkit-scrollbar {
+        height: 6px;
+      }
+      .hscroll::-webkit-scrollbar-thumb {
+        background: var(--mint);
+        border-radius: 3px;
+      }
+
+      /* WORKS card */
+      .work {
+        flex: 0 0 380px;
+        scroll-snap-align: start;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        transition:
+          transform 0.4s,
+          border-color 0.4s;
+        display: flex;
+        flex-direction: column;
+      }
+      .work:hover {
+        transform: translateY(-6px);
+        border-color: var(--mint);
+        box-shadow: var(--glow);
+      }
+      .work-img {
+        aspect-ratio: 16/10;
+        position: relative;
+        overflow: hidden;
+        background: var(--bg-3);
+        border-bottom: 1px solid var(--line);
+      }
+      .work-img .grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(var(--line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--line) 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+      .work-img .glow {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 50% 60%,
+          var(--peach) 0%,
+          transparent 55%
+        );
+        opacity: 0.5;
+        mix-blend-mode: screen;
+      }
+      .work-img .name {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-family: var(--f-deco);
+        font-size: 34px;
+        color: var(--fg);
+        text-shadow: 0 0 20px var(--mint);
+        text-transform: lowercase;
+      }
+      .work-img .badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        font-size: 10px;
+        padding: 4px 8px;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        color: var(--mint);
+        letter-spacing: 0.15em;
+      }
+      .work-body {
+        padding: 20px 22px 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex: 1;
+      }
+      .work-tag {
+        font-size: 10px;
+        color: var(--fg-d);
+        letter-spacing: 0.18em;
+      }
+      .work-h {
+        font-size: 18px;
+        color: var(--fg);
+        font-weight: 500;
+        line-height: 1.4;
+      }
+      .work-d {
+        font-size: 12px;
+        color: var(--fg-d);
+        line-height: 1.8;
+        flex: 1;
+      }
+      .work-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 14px;
+        border-top: 1px solid var(--line);
+        font-size: 11px;
+        color: var(--fg-d);
+      }
+      .work-meta .up {
+        color: var(--mint);
+      }
+
+      /* SOCIAL card (yt/note/x) */
+      .social-card {
+        flex: 0 0 340px;
+        scroll-snap-align: start;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        transition: all 0.4s;
+      }
+      .social-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--peach);
+        box-shadow: 0 0 24px color-mix(in srgb, var(--peach) 30%, transparent);
+      }
+      .social-thumb {
+        aspect-ratio: 16/9;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        position: relative;
+        overflow: hidden;
+        background: var(--bg-3);
+      }
+      .social-thumb .gradient {
+        position: absolute;
+        inset: 0;
+        opacity: 0.5;
+        mix-blend-mode: screen;
+      }
+      .social-thumb .label {
+        position: absolute;
+        left: 14px;
+        bottom: 12px;
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        color: var(--fg);
+        background: color-mix(in srgb, var(--bg) 70%, transparent);
+        backdrop-filter: blur(4px);
+        padding: 4px 8px;
+        border-radius: 3px;
+        border: 1px solid var(--line);
+      }
+      .social-thumb .play {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: color-mix(in srgb, var(--bg) 70%, transparent);
+        border: 1px solid var(--line);
+        display: grid;
+        place-items: center;
+        color: var(--peach);
+        backdrop-filter: blur(4px);
+        transition: transform 0.3s;
+      }
+      .social-card:hover .play {
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+      .social-h {
+        font-size: 14px;
+        color: var(--fg);
+        line-height: 1.5;
+        font-weight: 500;
+      }
+      .social-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--fg-d);
+      }
+      .social-meta .v {
+        color: var(--mint);
+      }
+
+      .platform-head {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 32px;
+        max-width: 1280px;
+        margin: 60px auto 18px;
+      }
+      .platform-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .platform-icon.yt {
+        color: #ff4444;
+      }
+      .platform-icon.note {
+        color: var(--mint);
+      }
+      .platform-icon.x {
+        color: var(--fg);
+      }
+      .platform-name {
+        font-size: 18px;
+        color: var(--fg);
+        font-weight: 500;
+      }
+      .platform-name small {
+        display: block;
+        font-size: 11px;
+        color: var(--fg-d);
+        margin-top: 2px;
+        letter-spacing: 0.1em;
+      }
+      .platform-link {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--mint);
+      }
+
+      /* ========= PROFILE ========= */
+      .pf-grid {
+        display: grid;
+        grid-template-columns: 0.9fr 1.4fr;
+        gap: 50px;
+        align-items: start;
+        margin-top: 30px;
+      }
+      .pf-card {
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: var(--glow);
+      }
+      .pf-avatar {
+        aspect-ratio: 1;
+        border-radius: 10px;
+        background:
+          radial-gradient(circle at 35% 30%, var(--peach), transparent 55%),
+          radial-gradient(circle at 70% 70%, var(--mint), transparent 55%),
+          var(--bg-3);
+        border: 1px solid var(--line);
+        display: grid;
+        place-items: center;
+        font-family: var(--f-deco);
+        font-size: 60px;
+        color: var(--bg);
+        text-shadow: 0 0 20px var(--mint);
+      }
+      .pf-name {
+        font-size: 22px;
+        color: var(--fg);
+        margin-top: 18px;
+        font-weight: 600;
+      }
+      .pf-handle {
+        font-size: 12px;
+        color: var(--mint);
+        margin-top: 4px;
+      }
+      .pf-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px dashed var(--line);
+        font-size: 12px;
+      }
+      .pf-row .k {
+        color: var(--fg-d);
+      }
+      .pf-row .v {
+        color: var(--fg);
+      }
+      .pf-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 14px;
+      }
+      .pf-stack span {
+        font-size: 10px;
+        padding: 4px 8px;
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        color: var(--fg-d);
+      }
+      .pf-stack span:hover {
+        color: var(--mint);
+        border-color: var(--mint);
+      }
+
+      .pf-bio {
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 32px;
+        font-family: var(--f-mono);
+        font-size: 13px;
+        line-height: 1.95;
+        color: var(--fg-d);
+      }
+      .pf-bio h3 {
+        font-size: 14px;
+        color: var(--peach);
+        margin-bottom: 16px;
+        font-weight: 500;
+      }
+      .pf-bio h3::before {
+        content: "// ";
+      }
+      .pf-bio p {
+        margin-bottom: 16px;
+      }
+      .pf-bio code {
+        color: var(--mint);
+        background: var(--bg);
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 12px;
+      }
+
+      .pf-timeline {
+        margin-top: 24px;
+      }
+      .tl-item {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        gap: 16px;
+        padding: 12px 0;
+        border-top: 1px dashed var(--line);
+        font-size: 12px;
+      }
+      .tl-y {
+        color: var(--peach);
+        font-weight: 600;
+      }
+      .tl-d {
+        color: var(--fg-d);
+      }
+      .tl-d b {
+        color: var(--fg);
+        font-weight: 500;
+        display: block;
+        margin-bottom: 2px;
+      }
+      @media (max-width: 900px) {
+        .pf-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ========= FAQ ========= */
+      .faq {
+        margin-top: 30px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--bg-2);
+        overflow: hidden;
+      }
+      .faq-q {
+        padding: 20px 24px;
+        cursor: pointer;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        transition: background 0.3s;
+      }
+      .faq-q:last-child {
+        border-bottom: none;
+      }
+      .faq-q:hover {
+        background: var(--bg-3);
+      }
+      .faq-q .q {
+        font-size: 14px;
+        color: var(--fg);
+      }
+      .faq-q .q::before {
+        content: "$ ";
+        color: var(--mint);
+      }
+      .faq-q .t {
+        font-family: var(--f-mono);
+        color: var(--peach);
+        font-size: 14px;
+      }
+      .faq-a {
+        max-height: 0;
+        overflow: hidden;
+        transition:
+          max-height 0.5s,
+          padding 0.3s;
+        padding: 0 24px;
+        font-size: 13px;
+        color: var(--fg-d);
+        line-height: 1.9;
+        border-bottom: 1px solid var(--line);
+        background: var(--bg-3);
+      }
+      .faq-a:last-child {
+        border-bottom: none;
+      }
+      .faq-a::before {
+        content: "> ";
+        color: var(--mint);
+      }
+      .faq-q.open + .faq-a {
+        max-height: 280px;
+        padding: 18px 24px 22px;
+      }
+
+      /* ========= CTA ========= */
+      .cta-sec {
+        padding: 140px 0 100px;
+      }
+      .cta-term {
+        max-width: 920px;
+        margin: 0 auto;
+        background: var(--bg-2);
+        border: 1px solid var(--mint);
+        border-radius: 12px;
+        box-shadow:
+          0 0 60px color-mix(in srgb, var(--mint) 30%, transparent),
+          var(--glow);
+        overflow: hidden;
+      }
+      .cta-body {
+        padding: 50px 40px;
+        text-align: center;
+      }
+      .cta-prompt {
+        font-size: 13px;
+        color: var(--mint);
+        margin-bottom: 14px;
+      }
+      .cta-h {
+        font-family: var(--f-deco);
+        font-size: clamp(36px, 6vw, 68px);
+        color: var(--fg);
+        letter-spacing: -0.02em;
+        line-height: 1;
+        text-transform: lowercase;
+      }
+      .cta-h .a {
+        color: var(--peach);
+      }
+      .cta-h .b {
+        color: var(--mint);
+      }
+      .cta-sub {
+        color: var(--fg-d);
+        margin: 24px auto 30px;
+        max-width: 520px;
+        font-size: 13px;
+        line-height: 1.9;
+      }
+      .cta-row {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .cta-input {
+        display: flex;
+        gap: 0;
+        max-width: 480px;
+        margin: 24px auto 0;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .cta-input span {
+        padding: 12px 14px;
+        font-size: 13px;
+        color: var(--mint);
+      }
+      .cta-input input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-family: var(--f-mono);
+        font-size: 13px;
+        color: var(--fg);
+        padding: 12px 8px 12px 0;
+      }
+      .cta-input button {
+        padding: 0 18px;
+        background: var(--mint);
+        color: var(--bg);
+        border: none;
+        font-family: var(--f-mono);
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background 0.25s;
+      }
+      .cta-input button:hover {
+        background: var(--peach);
+      }
+
+      footer {
+        padding: 40px 32px 60px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: 11px;
+        color: var(--fg-d);
+        letter-spacing: 0.1em;
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+      footer .l {
+        color: var(--mint);
+      }
+
+      /* selection */
+      ::selection {
+        background: var(--mint);
+        color: var(--bg);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-blobs"></div>
+
+    <!-- NAV -->
+    <nav class="nav">
+      <div class="nav-l">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="nav-title">
+          <b>asura</b>@dev:<span style="color: var(--peach)">~</span>$
+        </div>
+      </div>
+      <div class="nav-r">
+        <a href="#about">about</a>
+        <a href="#service">service</a>
+        <a href="#works">works</a>
+        <a href="#youtube">media</a>
+        <a href="#faq">faq</a>
+        <button class="theme-tog" id="themeBtn">[ dark ]</button>
+      </div>
+    </nav>
+
+    <!-- HERO TERMINAL -->
+    <section class="hero">
+      <div class="term">
+        <div class="term-bar">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div class="path">~/asura/portfolio — zsh — 132×40</div>
+          <div class="tabs">
+            <span class="act">portfolio.sh</span><span>readme.md</span
+            ><span>contact.json</span>
+          </div>
+        </div>
+        <div class="term-body" id="termBody">
+          <span class="line"
+            ><span class="prompt"
+              ><span class="u">asura</span><span class="p">@</span
+              ><span class="h">dev</span><span class="p">:</span
+              ><span style="color: var(--peach)">~</span
+              ><span class="p">$</span></span
+            >
+            <span class="cmd" id="t1"></span
+          ></span>
+          <span class="line out" id="t2"></span>
+          <pre class="ascii" id="ascii">
+  ___    ____  __  _____  ___       ___    ____
+ /   |  / __/ / / / __/ |/ _ |     / _ |  /  _/
+/ /| | _\ \  / /_/ /__ /    /     / __ | _/ /
+/_/ |_|/___/  \____\___//_/|_| () /_/ |_|/___/
+       solo · hacker · builder · since 2018
+</pre
+          >
+          <span class="line" id="l3" style="display: none"
+            ><span class="prompt"
+              ><span class="u">asura</span><span class="p">@</span
+              ><span class="h">dev</span><span class="p">:</span
+              ><span style="color: var(--peach)">~</span
+              ><span class="p">$</span></span
+            >
+            <span class="cmd" id="t3"></span
+          ></span>
+          <span class="line out" id="t4"></span>
+          <span class="line" id="l5" style="display: none"
+            ><span class="prompt"
+              ><span class="u">asura</span><span class="p">@</span
+              ><span class="h">dev</span><span class="p">:</span
+              ><span style="color: var(--peach)">~</span
+              ><span class="p">$</span></span
+            >
+            <span class="cmd" id="t5"></span
+            ><span class="cursor" id="cur"></span
+          ></span>
+          <div class="term-cta" id="termCta">
+            <a href="#cta" class="btn primary">$ ./contact.sh →</a>
+            <a href="#works" class="btn ghost">cat ./works/*</a>
+            <a href="#service" class="btn ghost">ls ./services</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONCEPT -->
+    <section id="about">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-tag">cat about.md</div>
+          <h2 class="sec-h">solo, but <span class="a">unstoppable</span>.</h2>
+          <p class="sec-sub">
+            個人開発者として、企画・設計・実装・運用までを一人で完結。AIエージェントを"第二の自分"として常駐させ、24時間動く小さな会社を運営している。
+          </p>
+        </div>
+
+        <div class="concept-box reveal">
+          <pre class="log">
+<span class="ts">[2026-04-18 09:12:03]</span> <span class="lv">INFO</span>  <span class="msg">booting asura.dev_runtime ...</span>
+<span class="ts">[2026-04-18 09:12:04]</span> <span class="lv">INFO</span>  <span class="msg">load profile: solo_developer + ai_agent_swarm</span>
+<span class="ts">[2026-04-18 09:12:04]</span> <span class="lv">OK</span>    <span class="msg">→ vision="一人で、会社規模の事業を動かす"</span>
+<span class="ts">[2026-04-18 09:12:05]</span> <span class="lv w">WARN</span>  <span class="msg">resource: human=1 / agents=auto-scaling</span>
+<span class="ts">[2026-04-18 09:12:05]</span> <span class="lv">OK</span>    <span class="msg">stack: TypeScript / Rust / Bun / Cloudflare / Postgres</span>
+<span class="ts">[2026-04-18 09:12:06]</span> <span class="lv">OK</span>    <span class="msg">ready. listening on :443 ...</span>
+      </pre>
+        </div>
+
+        <div class="bento">
+          <div class="cell reveal" data-n="01">
+            <h4>solo first</h4>
+            <p>
+              意思決定→実装まで0距離。アイデアの初速を最大化し、市場に最短で届ける。
+            </p>
+          </div>
+          <div class="cell reveal" data-n="02">
+            <h4>agent native</h4>
+            <p>
+              運用・監視・調査はAIエージェントに委譲。人は創造と判断にだけ向き合う。
+            </p>
+          </div>
+          <div class="cell reveal" data-n="03">
+            <h4>ship daily</h4>
+            <p>
+              毎日デプロイ、毎週改善。動くプロダクトだけが、信頼を作ると知っている。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAIN -->
+    <section>
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-tag">tail -f errors.log</div>
+          <h2 class="sec-h">
+            こんな <span class="b">stack trace</span>、ありませんか
+          </h2>
+        </div>
+        <div class="pain-list reveal">
+          <div class="pain-row">
+            <div class="err">E_SLOW_BUILD</div>
+            <h3>外注で開発が遅い・伝わらない</h3>
+            <p class="fix">
+              技術理解のある個人開発者が直接実装。週次でPRを積み上げる
+            </p>
+          </div>
+          <div class="pain-row">
+            <div class="err">E_OVER_BUDGET</div>
+            <h3>制作会社の見積もりが高い</h3>
+            <p class="fix">少人数最小工数で価値検証。MVPは2週間〜から着手可</p>
+          </div>
+          <div class="pain-row">
+            <div class="err">E_NO_OPS</div>
+            <h3>作って終わり、運用が回らない</h3>
+            <p class="fix">
+              AIエージェント + 監視を最初から組み込む構成で納品する
+            </p>
+          </div>
+          <div class="pain-row">
+            <div class="err">E_AI_UNUSED</div>
+            <h3>AIを業務に活かせていない</h3>
+            <p class="fix">
+              既存業務をスキャンし、削れる工程を提案 → エージェント化
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICE -->
+    <section id="service">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-tag">ls ./services</div>
+          <h2 class="sec-h">what i <span class="b">build</span> for you</h2>
+        </div>
+        <div class="svc-grid">
+          <div class="svc reveal">
+            <div class="svc-id">SVC/01</div>
+            <h3>web <span class="b">app</span> dev</h3>
+            <p>
+              SaaS、社内ツール、業務システム、ランディングページまで。フロントからバックエンド、インフラまで一人で完結。
+            </p>
+            <div class="svc-tags">
+              <span>Next.js</span><span>Bun</span><span>Hono</span
+              ><span>Postgres</span><span>Cloudflare</span>
+            </div>
+          </div>
+          <div class="svc reveal">
+            <div class="svc-id">SVC/02</div>
+            <h3>ai agent <span class="b">build</span></h3>
+            <p>
+              業務自動化エージェントの設計と実装。Slack/Notion連携、社内チャット、リサーチbotなど目的別にカスタム開発。
+            </p>
+            <div class="svc-tags">
+              <span>Anthropic</span><span>OpenAI</span><span>LangGraph</span
+              ><span>MCP</span>
+            </div>
+          </div>
+          <div class="svc reveal">
+            <div class="svc-id">SVC/03</div>
+            <h3>tech <span class="b">consulting</span></h3>
+            <p>
+              個人開発者・スタートアップ向けに技術選定、アーキ設計、コードレビュー。月額顧問契約も可。
+            </p>
+            <div class="svc-tags">
+              <span>Architect</span><span>DX</span><span>Review</span>
+            </div>
+          </div>
+          <div class="svc reveal">
+            <div class="svc-id">SVC/04</div>
+            <h3>content <span class="b">creation</span></h3>
+            <p>
+              YouTube/note/X
+              で開発記録と知見を発信中。技術記事の執筆や登壇、教育コンテンツ制作も承ります。
+            </p>
+            <div class="svc-tags">
+              <span>YouTube</span><span>note</span><span>X</span
+              ><span>Workshop</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKS - horizontal scroll -->
+    <section class="hscroll-sec" id="works">
+      <div class="hscroll-head reveal">
+        <div>
+          <div class="sec-tag">find ./works -type product</div>
+          <h2 class="sec-h">selected <span class="a">works</span></h2>
+        </div>
+        <div class="hscroll-arrows">
+          <button class="arrow-btn" data-scroll="works" data-dir="-1">←</button>
+          <button class="arrow-btn" data-scroll="works" data-dir="1">→</button>
+        </div>
+      </div>
+      <div class="hscroll" id="worksScroll">
+        <article class="work">
+          <div class="work-img">
+            <div class="grid"></div>
+            <div class="glow"></div>
+            <div class="badge">SAAS</div>
+            <div class="name">codenest</div>
+          </div>
+          <div class="work-body">
+            <div class="work-tag">2025 / SOLO PROJECT</div>
+            <div class="work-h">CodeNest — AI Pair Coding Editor</div>
+            <p class="work-d">
+              ローカルAIと同期するコードエディタ。MAU 12,000+。Product Hunt
+              1位獲得。
+            </p>
+            <div class="work-meta">
+              <span>typescript · rust</span><span class="up">↑ 12k MAU</span>
+            </div>
+          </div>
+        </article>
+        <article class="work">
+          <div class="work-img">
+            <div class="grid"></div>
+            <div
+              class="glow"
+              style="
+                background: radial-gradient(
+                  circle at 50% 50%,
+                  var(--mint) 0%,
+                  transparent 55%
+                );
+              "
+            ></div>
+            <div class="badge">AGENT</div>
+            <div class="name">notar</div>
+          </div>
+          <div class="work-body">
+            <div class="work-tag">2025 / B2B SAAS</div>
+            <div class="work-h">Notar — Notion自動議事録AI</div>
+            <p class="work-d">
+              Slack議論を要約しNotionに自動保存。導入企業 80社、年間ARR ¥38M。
+            </p>
+            <div class="work-meta">
+              <span>bun · openai</span><span class="up">↑ ¥38M ARR</span>
+            </div>
+          </div>
+        </article>
+        <article class="work">
+          <div class="work-img">
+            <div class="grid"></div>
+            <div class="glow"></div>
+            <div class="badge">OSS</div>
+            <div class="name">flux.rs</div>
+          </div>
+          <div class="work-body">
+            <div class="work-tag">2024 / OPEN SOURCE</div>
+            <div class="work-h">flux.rs — Rust製 Stream Engine</div>
+            <p class="work-d">
+              超軽量ストリーム処理ランタイム。GitHub Stars
+              8.4k、企業導入20社以上。
+            </p>
+            <div class="work-meta">
+              <span>rust · tokio</span><span class="up">★ 8.4k</span>
+            </div>
+          </div>
+        </article>
+        <article class="work">
+          <div class="work-img">
+            <div class="grid"></div>
+            <div
+              class="glow"
+              style="
+                background: radial-gradient(
+                  circle at 50% 50%,
+                  var(--mint) 0%,
+                  transparent 55%
+                );
+              "
+            ></div>
+            <div class="badge">MOBILE</div>
+            <div class="name">tonari</div>
+          </div>
+          <div class="work-body">
+            <div class="work-tag">2024 / iOS APP</div>
+            <div class="work-h">tonari — 集中作業マッチング</div>
+            <p class="work-d">
+              同じ時間帯に作業する人と繋がるアプリ。App Store 仕事効率化 7位。
+            </p>
+            <div class="work-meta">
+              <span>swift · supabase</span><span class="up">↓ 80k DL</span>
+            </div>
+          </div>
+        </article>
+        <article class="work">
+          <div class="work-img">
+            <div class="grid"></div>
+            <div class="glow"></div>
+            <div class="badge">EXPERIMENT</div>
+            <div class="name">pulse</div>
+          </div>
+          <div class="work-body">
+            <div class="work-tag">2024 / RESEARCH</div>
+            <div class="work-h">Pulse — リアルタイム感情可視化</div>
+            <p class="work-d">
+              声からチームの感情を可視化する実験。Forbes JAPAN掲載。
+            </p>
+            <div class="work-meta">
+              <span>python · webrtc</span><span class="up">→ press</span>
+            </div>
+          </div>
+        </article>
+        <article class="work">
+          <div class="work-img">
+            <div class="grid"></div>
+            <div
+              class="glow"
+              style="
+                background: radial-gradient(
+                  circle at 50% 50%,
+                  var(--mint) 0%,
+                  transparent 55%
+                );
+              "
+            ></div>
+            <div class="badge">CLI TOOL</div>
+            <div class="name">drift</div>
+          </div>
+          <div class="work-body">
+            <div class="work-tag">2023 / DEV TOOL</div>
+            <div class="work-h">drift — DBスキーマ差分CLI</div>
+            <p class="work-d">
+              DBマイグレーションの差分を自動検出するツール。npm DL 月50k。
+            </p>
+            <div class="work-meta">
+              <span>node · postgres</span><span class="up">↓ 50k/mo</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- YOUTUBE -->
+    <section class="hscroll-sec" id="youtube" style="padding-top: 40px">
+      <div class="platform-head reveal">
+        <div class="platform-icon yt">▶</div>
+        <div class="platform-name">
+          YouTube <small>@asura.dev / 24,000 subscribers</small>
+        </div>
+        <a href="#" class="platform-link">channel ↗</a>
+      </div>
+      <div
+        class="hscroll-head reveal"
+        style="margin-top: 0; margin-bottom: 20px"
+      >
+        <div class="hscroll-arrows" style="margin-left: auto">
+          <button class="arrow-btn" data-scroll="yt" data-dir="-1">←</button>
+          <button class="arrow-btn" data-scroll="yt" data-dir="1">→</button>
+        </div>
+      </div>
+      <div class="hscroll" id="ytScroll">
+        <article class="social-card">
+          <div class="social-thumb">
+            <div
+              class="gradient"
+              style="background: linear-gradient(135deg, #ff4444, var(--peach))"
+            ></div>
+            <div class="play">▶</div>
+            <div class="label">12:42</div>
+          </div>
+          <h4 class="social-h">個人開発で月収100万を超えた理由を全部話す</h4>
+          <div class="social-meta">
+            <span>2週間前</span><span class="v">▶ 184k views</span>
+          </div>
+        </article>
+        <article class="social-card">
+          <div class="social-thumb">
+            <div
+              class="gradient"
+              style="background: linear-gradient(135deg, var(--mint), #066)"
+            ></div>
+            <div class="play">▶</div>
+            <div class="label">28:14</div>
+          </div>
+          <h4 class="social-h">Bun + Hono で SaaSを2週間で作る【完全解説】</h4>
+          <div class="social-meta">
+            <span>1ヶ月前</span><span class="v">▶ 92k views</span>
+          </div>
+        </article>
+        <article class="social-card">
+          <div class="social-thumb">
+            <div
+              class="gradient"
+              style="background: linear-gradient(135deg, var(--peach), #ff4444)"
+            ></div>
+            <div class="play">▶</div>
+            <div class="label">15:08</div>
+          </div>
+          <h4 class="social-h">AIエージェント運用、半年やって分かった現実</h4>
+          <div class="social-meta">
+            <span>2ヶ月前</span><span class="v">▶ 211k views</span>
+          </div>
+        </article>
+        <article class="social-card">
+          <div class="social-thumb">
+            <div
+              class="gradient"
+              style="background: linear-gradient(135deg, #06f, var(--mint))"
+            ></div>
+            <div class="play">▶</div>
+            <div class="label">09:55</div>
+          </div>
+          <h4 class="social-h">Cursor + Claude Code で爆速開発する設定</h4>
+          <div class="social-meta">
+            <span>3ヶ月前</span><span class="v">▶ 156k views</span>
+          </div>
+        </article>
+        <article class="social-card">
+          <div class="social-thumb">
+            <div
+              class="gradient"
+              style="
+                background: linear-gradient(135deg, var(--peach), var(--mint));
+              "
+            ></div>
+            <div class="play">▶</div>
+            <div class="label">42:11</div>
+          </div>
+          <h4 class="social-h">【ライブ】個人開発者の1週間に密着</h4>
+          <div class="social-meta">
+            <span>4ヶ月前</span><span class="v">▶ 78k views</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- NOTE -->
+    <section class="hscroll-sec" id="note" style="padding-top: 40px">
+      <div class="platform-head reveal">
+        <div class="platform-icon note">N</div>
+        <div class="platform-name">
+          note <small>@asura_dev / 8,200 followers</small>
+        </div>
+        <a href="#" class="platform-link">profile ↗</a>
+      </div>
+      <div
+        class="hscroll-head reveal"
+        style="margin-top: 0; margin-bottom: 20px"
+      >
+        <div class="hscroll-arrows" style="margin-left: auto">
+          <button class="arrow-btn" data-scroll="nt" data-dir="-1">←</button>
+          <button class="arrow-btn" data-scroll="nt" data-dir="1">→</button>
+        </div>
+      </div>
+      <div class="hscroll" id="ntScroll">
+        <article class="social-card">
+          <div class="social-thumb">
+            <div
+              class="gradient"
+              style="
+                background: linear-gradient(135deg, var(--mint), var(--peach));
+              "
+            ></div>
+            <div class="label">ESSAY · 12 min</div>
+          </div>
+          <h4 class="social-h">
+            なぜ僕は「会社」をやめて「ひとり」を選んだのか
+          </h4>
+          <div class="social-meta">
+            <span>2026.04.10</span><span class="v">♡ 3,420</span>
+          </div>
+        </article>
+        <article class="social-card">
+          <div class="social-thumb">
+            <div
+              class="gradient"
+              style="background: linear-gradient(135deg, var(--peach), #ff8866)"
+            ></div>
+            <div class="label">TECH · 18 min</div>
+          </div>
+          <h4 class="social-h">個人開発者のための"持続可能な"AIスタック2026</h4>
+          <div class="social-meta">
+            <span>2026.03.28</span><span class="v">♡ 2,180</span>
+          </div>
+        </article>
+        <article class="social-card">
+          <div class="social-thumb">
+            <div
+              class="gradient"
+              style="background: linear-gradient(135deg, #5577ff, var(--mint))"
+            ></div>
+            <div class="label">PAID · 22 min</div>
+          </div>
+          <h4 class="social-h">SaaSをひとりで作って月¥3M売るまでの全手順</h4>
+          <div class="social-meta">
+            <span>2026.03.15</span><span class="v">♡ 4,800</span>
+          </div>
+        </article>
+        <article class="social-card">
+          <div class="social-thumb">
+            <div
+              class="gradient"
+              style="background: linear-gradient(135deg, var(--mint), #22cc88)"
+            ></div>
+            <div class="label">ESSAY · 8 min</div>
+          </div>
+          <h4 class="social-h">AIに仕事を奪われる前に、AIで仕事を作る</h4>
+          <div class="social-meta">
+            <span>2026.02.20</span><span class="v">♡ 5,640</span>
+          </div>
+        </article>
+        <article class="social-card">
+          <div class="social-thumb">
+            <div
+              class="gradient"
+              style="
+                background: linear-gradient(135deg, var(--peach), var(--mint));
+              "
+            ></div>
+            <div class="label">DIARY · 6 min</div>
+          </div>
+          <h4 class="social-h">ひとりで働く365日、孤独との付き合い方</h4>
+          <div class="social-meta">
+            <span>2026.01.31</span><span class="v">♡ 1,920</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- X -->
+    <section class="hscroll-sec" id="x" style="padding-top: 40px">
+      <div class="platform-head reveal">
+        <div class="platform-icon x">𝕏</div>
+        <div class="platform-name">
+          X (Twitter) <small>@asura_dev / 38,500 followers</small>
+        </div>
+        <a href="#" class="platform-link">timeline ↗</a>
+      </div>
+      <div
+        class="hscroll-head reveal"
+        style="margin-top: 0; margin-bottom: 20px"
+      >
+        <div class="hscroll-arrows" style="margin-left: auto">
+          <button class="arrow-btn" data-scroll="xs" data-dir="-1">←</button>
+          <button class="arrow-btn" data-scroll="xs" data-dir="1">→</button>
+        </div>
+      </div>
+      <div class="hscroll" id="xsScroll">
+        <article class="social-card">
+          <div style="font-size: 13px; color: var(--fg); line-height: 1.7">
+            個人開発で月¥3M超えるまでにやめた習慣<br /><br />
+            ・完璧主義<br />・週末作業<br />・Slack常駐<br />・10人飲み<br />・MTG過多<br /><br />
+            やったこと: 平日午前を全部"思考"に使う。これだけ。
+          </div>
+          <div
+            class="social-meta"
+            style="
+              margin-top: auto;
+              padding-top: 14px;
+              border-top: 1px solid var(--line);
+            "
+          >
+            <span>2d ago</span><span class="v">♡ 8.2k · ↻ 1.4k</span>
+          </div>
+        </article>
+        <article class="social-card">
+          <div style="font-size: 13px; color: var(--fg); line-height: 1.7">
+            AIエージェントを"同僚"として扱うコツ<br /><br />
+            曖昧な指示はNG。<br />
+            役割を明文化、入出力を定義、レビュー基準を渡す。<br /><br />
+            要するに、新人マネジメントと一緒。違うのは24時間文句言わず働くこと。
+          </div>
+          <div
+            class="social-meta"
+            style="
+              margin-top: auto;
+              padding-top: 14px;
+              border-top: 1px solid var(--line);
+            "
+          >
+            <span>5d ago</span><span class="v">♡ 12.4k · ↻ 2.1k</span>
+          </div>
+        </article>
+        <article class="social-card">
+          <div style="font-size: 13px; color: var(--fg); line-height: 1.7">
+            新作リリース 🚀<br /><br />
+            notar v2.0 公開しました。<br />
+            ・処理速度3倍<br />・Notion双方向同期<br />・要約品質UP<br /><br />
+            無料プランあり。試してみてください👇
+          </div>
+          <div
+            class="social-meta"
+            style="
+              margin-top: auto;
+              padding-top: 14px;
+              border-top: 1px solid var(--line);
+            "
+          >
+            <span>1w ago</span><span class="v">♡ 4.6k · ↻ 920</span>
+          </div>
+        </article>
+        <article class="social-card">
+          <div style="font-size: 13px; color: var(--fg); line-height: 1.7">
+            個人開発で大事なのは<br />"作る力"より"続ける力"<br /><br />
+            毎日コミットを4年続けたら、ある日から世界が回りはじめる。<br /><br />
+            最初の100日が一番つらいけど、そこを越えたら勝ち。
+          </div>
+          <div
+            class="social-meta"
+            style="
+              margin-top: auto;
+              padding-top: 14px;
+              border-top: 1px solid var(--line);
+            "
+          >
+            <span>1w ago</span><span class="v">♡ 22.1k · ↻ 4.8k</span>
+          </div>
+        </article>
+        <article class="social-card">
+          <div style="font-size: 13px; color: var(--fg); line-height: 1.7">
+            スタックメモ📝<br /><br />
+            ・Bun + Hono (API)<br />・Postgres + Drizzle (DB)<br />・Cloudflare
+            (CDN/Edge)<br />・Tailwind + shadcn (UI)<br />・Anthropic (AI)<br /><br />
+            2026の最適解、これに収束した。
+          </div>
+          <div
+            class="social-meta"
+            style="
+              margin-top: auto;
+              padding-top: 14px;
+              border-top: 1px solid var(--line);
+            "
+          >
+            <span>2w ago</span><span class="v">♡ 6.8k · ↻ 1.1k</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="profile">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-tag">whoami</div>
+          <h2 class="sec-h">profile<span class="a">.json</span></h2>
+        </div>
+        <div class="pf-grid">
+          <div class="pf-card reveal">
+            <div class="pf-avatar">a</div>
+            <div class="pf-name">明日羅 蒼真</div>
+            <div class="pf-handle">@asura_dev</div>
+            <div style="margin-top: 22px">
+              <div class="pf-row">
+                <span class="k">role</span><span class="v">solo developer</span>
+              </div>
+              <div class="pf-row">
+                <span class="k">based</span><span class="v">tokyo, jp</span>
+              </div>
+              <div class="pf-row">
+                <span class="k">since</span><span class="v">2018</span>
+              </div>
+              <div class="pf-row">
+                <span class="k">caffeine</span><span class="v">∞ ml/day</span>
+              </div>
+              <div class="pf-row">
+                <span class="k">status</span
+                ><span class="v" style="color: var(--mint)">● accepting</span>
+              </div>
+            </div>
+            <div class="pf-stack">
+              <span>TypeScript</span><span>Rust</span><span>Bun</span
+              ><span>Hono</span> <span>Next.js</span><span>Postgres</span
+              ><span>Cloudflare</span><span>Tailwind</span>
+              <span>Anthropic</span><span>OpenAI</span><span>MCP</span>
+            </div>
+          </div>
+          <div class="pf-bio reveal">
+            <h3>about_me</h3>
+            <p>
+              東京を拠点に活動する
+              <code>solo developer</code
+              >。SaaS、AIエージェント、OSSツールを個人で企画・開発・運営している。会社員時代に大手SIerでアーキテクトとして勤務後、2022年に独立。現在はプロダクト3本を一人で運営し、年商
+              <code>¥80M+</code> を達成。
+            </p>
+            <p>
+              "会社をひとりで持つ"
+              をテーマに、AIエージェントを駆使した1人組織の運用ノウハウをYouTube/note/Xで発信中。著書『ひとりで作る、ひとりで売る』(2025)。Forbes
+              JAPAN "Solo Builders 30" 選出。
+            </p>
+            <h3>timeline</h3>
+            <div class="pf-timeline">
+              <div class="tl-item">
+                <span class="tl-y">2026</span
+                ><span class="tl-d"
+                  ><b>notar v2.0 リリース</b>導入企業80社突破 /
+                  個人開発者向けカンファレンス登壇</span
+                >
+              </div>
+              <div class="tl-item">
+                <span class="tl-y">2025</span
+                ><span class="tl-d"
+                  ><b>著書出版・Forbes掲載</b
+                  >『ひとりで作る、ひとりで売る』(技術評論社)</span
+                >
+              </div>
+              <div class="tl-item">
+                <span class="tl-y">2024</span
+                ><span class="tl-d"
+                  ><b>flux.rs OSS化</b>GitHub 8.4k stars / Product Hunt 1位
+                  (CodeNest)</span
+                >
+              </div>
+              <div class="tl-item">
+                <span class="tl-y">2022</span
+                ><span class="tl-d"
+                  ><b>独立・個人開発者へ</b
+                  >大手SIerを退職、初プロダクトをローンチ</span
+                >
+              </div>
+              <div class="tl-item">
+                <span class="tl-y">2018</span
+                ><span class="tl-d"
+                  ><b>キャリア開始</b
+                  >東京大学工学部卒、新卒でアーキテクトに</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-tag">man asura</div>
+          <h2 class="sec-h">f.a.q<span class="a">.</span></h2>
+        </div>
+        <div class="faq reveal">
+          <div class="faq-q">
+            <span class="q">最小予算はいくらから？</span
+            ><span class="t">[+]</span>
+          </div>
+          <div class="faq-a">
+            プロトタイプ開発で¥300k〜、本格的なSaaS開発で¥1.5M〜。月額顧問契約は¥80k/月から承ります。
+          </div>
+          <div class="faq-q">
+            <span class="q">どれくらいで出来上がりますか？</span
+            ><span class="t">[+]</span>
+          </div>
+          <div class="faq-a">
+            MVPは2〜4週間、フル機能のWebアプリで6〜12週間が目安。要件次第で前後しますので、まずは相談ください。
+          </div>
+          <div class="faq-q">
+            <span class="q">納品後の保守も対応しますか？</span
+            ><span class="t">[+]</span>
+          </div>
+          <div class="faq-a">
+            月額保守プラン(¥50k〜)で対応します。AIエージェントによる監視・自動修復もセットで提供できます。
+          </div>
+          <div class="faq-q">
+            <span class="q">技術相談だけでもOK？</span
+            ><span class="t">[+]</span>
+          </div>
+          <div class="faq-a">
+            単発相談 (¥30k/h)
+            または月額顧問契約で対応可能。アーキ設計やコードレビューだけでも大丈夫です。
+          </div>
+          <div class="faq-q">
+            <span class="q">遠方ですが対応可能？</span
+            ><span class="t">[+]</span>
+          </div>
+          <div class="faq-a">
+            フルリモート対応です。日本全国・海外問わずSlack/Notion/Zoomで完結します。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-sec" id="cta">
+      <div class="wrap">
+        <div class="cta-term reveal">
+          <div class="term-bar">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <div class="path">contact.sh</div>
+          </div>
+          <div class="cta-body">
+            <div class="cta-prompt">$ ./contact.sh --start</div>
+            <h2 class="cta-h">
+              let's <span class="a">build</span><br />something
+              <span class="b">together</span>.
+            </h2>
+            <p class="cta-sub">
+              プロダクトのアイデア、技術相談、ちょっとした壁打ちまで何でもどうぞ。<br />30分の無料セッションを開いています。
+            </p>
+            <div class="cta-input">
+              <span>→</span>
+              <input type="email" placeholder="your@email.com" />
+              <button>SEND</button>
+            </div>
+            <div class="cta-row" style="margin-top: 24px">
+              <a href="#" class="btn ghost">📅 calendar</a>
+              <a href="#" class="btn ghost">📨 dm on X</a>
+              <a href="#" class="btn ghost">💼 portfolio.pdf</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>© 2026 asura.dev — built solo, with love &amp; coffee</div>
+      <div><span class="l">●</span> systems operational · uptime 99.99%</div>
+    </footer>
+
+    <script>
+      // ===== typing animation =====
+      const seq = [
+        { el: "t1", text: "whoami", delay: 30, after: 300 },
+        {
+          el: "t2",
+          text: "> asura — solo developer / ai agent operator / based in tokyo",
+          delay: 12,
+          after: 400,
+          asciiAfter: true,
+        },
+        {
+          el: "t3",
+          text: "cat ./mission.txt",
+          delay: 30,
+          after: 300,
+          showLine: "l3",
+        },
+        {
+          el: "t4",
+          text: "> 「会社を、ひとりで持つ。」AIエージェントと共に、24時間動く事業を運営する個人開発者です。",
+          delay: 14,
+          after: 500,
+        },
+        {
+          el: "t5",
+          text: "./portfolio.sh --open",
+          delay: 30,
+          after: 0,
+          showLine: "l5",
+          cta: true,
+        },
+      ];
+
+      async function type(el, text, delay) {
+        return new Promise((res) => {
+          let i = 0;
+          const timer = setInterval(() => {
+            el.textContent = text.slice(0, ++i);
+            if (i >= text.length) {
+              clearInterval(timer);
+              res();
+            }
+          }, delay);
+        });
+      }
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      (async () => {
+        await sleep(300);
+        for (const s of seq) {
+          if (s.showLine)
+            document.getElementById(s.showLine).style.display = "block";
+          const el = document.getElementById(s.el);
+          await type(el, s.text, s.delay);
+          if (s.asciiAfter)
+            document.getElementById("ascii").classList.add("show");
+          if (s.cta) document.getElementById("termCta").classList.add("show");
+          await sleep(s.after);
+        }
+      })();
+
+      // ===== theme toggle =====
+      const themeBtn = document.getElementById("themeBtn");
+      themeBtn.addEventListener("click", () => {
+        const cur = document.documentElement.getAttribute("data-theme");
+        const next = cur === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        themeBtn.textContent = next === "dark" ? "[ dark ]" : "[ light ]";
+      });
+
+      // ===== reveal =====
+      const io = new IntersectionObserver(
+        (es) => {
+          es.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.12 },
+      );
+      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+      // ===== faq =====
+      document.querySelectorAll(".faq-q").forEach((q) => {
+        q.addEventListener("click", () => {
+          const open = q.classList.contains("open");
+          document.querySelectorAll(".faq-q").forEach((x) => {
+            x.classList.remove("open");
+            x.querySelector(".t").textContent = "[+]";
+          });
+          if (!open) {
+            q.classList.add("open");
+            q.querySelector(".t").textContent = "[-]";
+          }
+        });
+      });
+
+      // ===== horizontal scroll arrows =====
+      const scrollMap = {
+        works: "worksScroll",
+        yt: "ytScroll",
+        nt: "ntScroll",
+        xs: "xsScroll",
+      };
+      document.querySelectorAll(".arrow-btn").forEach((b) => {
+        b.addEventListener("click", () => {
+          const target = document.getElementById(scrollMap[b.dataset.scroll]);
+          if (!target) return;
+          const card = target.querySelector("article");
+          const w = card ? card.offsetWidth + 22 : 360;
+          target.scrollBy({
+            left: w * parseInt(b.dataset.dir),
+            behavior: "smooth",
+          });
+        });
+      });
+
+      // ===== drag to scroll =====
+      document.querySelectorAll(".hscroll").forEach((track) => {
+        let isDown = false,
+          startX = 0,
+          sl = 0;
+        track.addEventListener("mousedown", (e) => {
+          isDown = true;
+          startX = e.pageX - track.offsetLeft;
+          sl = track.scrollLeft;
+          track.style.cursor = "grabbing";
+        });
+        ["mouseleave", "mouseup"].forEach((ev) =>
+          track.addEventListener(ev, () => {
+            isDown = false;
+            track.style.cursor = "";
+          }),
+        );
+        track.addEventListener("mousemove", (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - track.offsetLeft;
+          track.scrollLeft = sl - (x - startX) * 1.4;
+        });
+      });
+    </script>
+  </body>
+</html>
