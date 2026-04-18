@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 const PAIN_LOGS = [
   {
     title: "人手不足",
@@ -32,7 +34,7 @@ export default function Pain() {
           </p>
         </div>
 
-        <div className="pain-term term reveal">
+        <div className="pain-term term">
           <div className="term-bar">
             <div className="dots" aria-hidden="true">
               <span />
@@ -52,8 +54,16 @@ export default function Pain() {
             </p>
 
             <div className="pain-stream">
-              {PAIN_LOGS.map((pain) => (
-                <article className="pain-entry" key={pain.title}>
+              {PAIN_LOGS.map((pain, index) => (
+                <article
+                  className="pain-entry pain-entry-error reveal-error reveal-center"
+                  key={pain.title}
+                  style={
+                    {
+                      "--reveal-delay": `${index * 120}ms`,
+                    } as CSSProperties
+                  }
+                >
                   <p className="pain-line pain-line-error">
                     <span className="pain-prefix">&gt;</span>
                     <span>
@@ -71,7 +81,14 @@ export default function Pain() {
                 </article>
               ))}
 
-              <div className="pain-entry pain-entry-resolving">
+              <div
+                className="pain-entry pain-entry-resolving reveal-resolving reveal-center"
+                style={
+                  {
+                    "--reveal-delay": `${PAIN_LOGS.length * 120}ms`,
+                  } as CSSProperties
+                }
+              >
                 <p className="pain-line pain-line-resolving">
                   <span className="pain-prefix">&gt;</span>
                   <span className="pain-status">RESOLVING...</span>
