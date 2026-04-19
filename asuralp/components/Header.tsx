@@ -88,7 +88,7 @@ export default function Header() {
               className={`nav-social nav-social-${social.id}`}
               href={social.href}
               key={social.label}
-              rel="noreferrer"
+              rel="noopener noreferrer"
               target="_blank"
               title={social.title}
             >

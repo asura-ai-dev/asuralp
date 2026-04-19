@@ -72,6 +72,8 @@ const INITIAL_MESSAGES: ChatMessage[] = [
 const INQUIRY_SUCCESS_REPLY =
   "ご要望を確認しました。内容を確認し、折り返しご連絡します。";
 
+const MAX_INPUT_LENGTH = 800;
+
 const STEP_OPTIONS: Partial<Record<Step, ChatOption[]>> = {
   start: [
     { label: "LP制作" },
@@ -718,8 +720,11 @@ export default function ChatBot() {
                 <textarea
                   className="chatbot-input"
                   id="asura-chatbot-input"
+                  maxLength={MAX_INPUT_LENGTH}
                   name="message"
-                  onChange={(event) => setInput(event.target.value)}
+                  onChange={(event) =>
+                    setInput(event.target.value.slice(0, MAX_INPUT_LENGTH))
+                  }
                   onKeyDown={handleComposerKeyDown}
                   placeholder={TEXT_PLACEHOLDERS[step] ?? "相談内容を入力してください"}
                   rows={3}

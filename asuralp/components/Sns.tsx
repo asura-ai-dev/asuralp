@@ -50,7 +50,7 @@ export default function Sns() {
                     <a
                       className="btn ghost"
                       href={channel.href}
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       target="_blank"
                     >
                       open {channel.label}
