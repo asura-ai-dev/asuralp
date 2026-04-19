@@ -10,7 +10,19 @@ type ChatPayload = {
 };
 
 const FALLBACK_REPLY =
-  "ありがとうございます!内容を確認し、折り返しご連絡します。少々お待ちください。";
+  "ご要望を確認しました。内容を確認し、折り返しご連絡します。";
+
+const JAPAN_TIME_FORMATTER = new Intl.DateTimeFormat("ja-JP", {
+  day: "2-digit",
+  hour: "2-digit",
+  hour12: false,
+  hourCycle: "h23",
+  minute: "2-digit",
+  month: "2-digit",
+  second: "2-digit",
+  timeZone: "Asia/Tokyo",
+  year: "numeric",
+});
 
 const ANSWER_LABELS: Record<string, string> = {
   industry: "業種",
@@ -25,12 +37,21 @@ const ANSWER_LABELS: Record<string, string> = {
 
 const normalizeText = (value: string | undefined) => value?.trim() ?? "";
 
+const formatJapanTime = (date = new Date()) => {
+  const parts = JAPAN_TIME_FORMATTER.formatToParts(date);
+  const valueByType = Object.fromEntries(
+    parts.map((part) => [part.type, part.value]),
+  );
+
+  return `${valueByType.year}-${valueByType.month}-${valueByType.day} ${valueByType.hour}:${valueByType.minute}:${valueByType.second} JST`;
+};
+
 const formatDiscordContent = (body: ChatPayload) => {
   const message = normalizeText(body.message);
   const service = normalizeText(body.payload?.service);
   const contact = normalizeText(body.payload?.contact);
   const answers = body.payload?.answers ?? {};
-  const time = new Date().toISOString();
+  const time = formatJapanTime();
 
   if (service) {
     const answerLines = Object.entries(answers)
@@ -61,7 +82,7 @@ const formatDiscordContent = (body: ChatPayload) => {
 
   return [
     "New inquiry from ASURA LP",
-    `Time: ${time}`,
+    `Time (JST): ${time}`,
     `Message: ${message}`,
   ].join("\n");
 };
@@ -102,9 +123,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       ok: true,
-      reply: webhookUrl
-        ? "ありがとうございます!内容を確認し、折り返しご連絡します。少々お待ちください。"
-        : FALLBACK_REPLY,
+      reply: FALLBACK_REPLY,
     });
   } catch {
     return NextResponse.json(

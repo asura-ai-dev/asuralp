@@ -69,6 +69,9 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   },
 ];
 
+const INQUIRY_SUCCESS_REPLY =
+  "ご要望を確認しました。内容を確認し、折り返しご連絡します。";
+
 const STEP_OPTIONS: Partial<Record<Step, ChatOption[]>> = {
   start: [
     { label: "LP制作" },
@@ -440,8 +443,7 @@ export default function ChatBot() {
 
       appendMessage(
         "assistant",
-        data.reply ??
-          "ありがとうございます!内容を確認し、折り返しご連絡します。少々お待ちください。",
+        data.reply ?? INQUIRY_SUCCESS_REPLY,
       );
       setStep("done");
       setStatusText("送信完了");
@@ -702,7 +704,14 @@ export default function ChatBot() {
             ) : null}
 
             {isTextStep ? (
-              <form className="chatbot-form" onSubmit={handleSubmit}>
+              <form
+                action="#"
+                className="chatbot-form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void handleSubmit();
+                }}
+              >
                 <label className="chatbot-label" htmlFor="asura-chatbot-input">
                   message
                 </label>
