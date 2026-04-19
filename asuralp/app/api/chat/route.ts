@@ -2,19 +2,78 @@ import { NextResponse } from "next/server";
 
 type ChatPayload = {
   message?: string;
+  payload?: {
+    service?: string;
+    answers?: Record<string, string>;
+    contact?: string;
+  };
 };
 
 const FALLBACK_REPLY =
-  "メッセージを受け取りました。内容を確認して、折り返しご連絡します。";
+  "ありがとうございます!内容を確認し、折り返しご連絡します。少々お待ちください。";
+
+const ANSWER_LABELS: Record<string, string> = {
+  industry: "業種",
+  image: "イメージ",
+  budget: "予算感",
+  challenge: "業務課題",
+  aiExperience: "AI経験",
+  appIdea: "作りたいもの",
+  appType: "アプリ種別",
+  detail: "相談内容",
+};
+
+const normalizeText = (value: string | undefined) => value?.trim() ?? "";
+
+const formatDiscordContent = (body: ChatPayload) => {
+  const message = normalizeText(body.message);
+  const service = normalizeText(body.payload?.service);
+  const contact = normalizeText(body.payload?.contact);
+  const answers = body.payload?.answers ?? {};
+  const time = new Date().toISOString();
+
+  if (service) {
+    const answerLines = Object.entries(answers)
+      .map(([key, value]) => {
+        const answer = value.trim();
+
+        if (!answer) {
+          return null;
+        }
+
+        return `${ANSWER_LABELS[key] ?? key}: ${answer}`;
+      })
+      .filter((line): line is string => Boolean(line));
+
+    return [
+      `新しい相談: ${service}`,
+      ...answerLines,
+      contact ? `連絡先: ${contact}` : null,
+      `時刻: ${time}`,
+    ]
+      .filter((line): line is string => Boolean(line))
+      .join("\n");
+  }
+
+  if (!message) {
+    return "";
+  }
+
+  return [
+    "New inquiry from ASURA LP",
+    `Time: ${time}`,
+    `Message: ${message}`,
+  ].join("\n");
+};
 
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as ChatPayload;
-    const message = body.message?.trim();
+    const content = formatDiscordContent(body);
 
-    if (!message) {
+    if (!content) {
       return NextResponse.json(
-        { ok: false, error: "message is required" },
+        { ok: false, error: "message or payload is required" },
         { status: 400 },
       );
     }
@@ -29,11 +88,7 @@ export async function POST(request: Request) {
         },
         body: JSON.stringify({
           username: "ASURA LP Bot",
-          content: [
-            "New inquiry from ASURA LP",
-            `Time: ${new Date().toISOString()}`,
-            `Message: ${message}`,
-          ].join("\n"),
+          content,
         }),
       });
 
@@ -48,7 +103,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       ok: true,
       reply: webhookUrl
-        ? "送信できました。Discord に通知し、折り返しの準備を始めています。"
+        ? "ありがとうございます!内容を確認し、折り返しご連絡します。少々お待ちください。"
         : FALLBACK_REPLY,
     });
   } catch {
