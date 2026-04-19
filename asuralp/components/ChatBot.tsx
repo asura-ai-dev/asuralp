@@ -1,9 +1,18 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import {
+  FormEvent,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 type ChatMessage = {
+  displayText?: string;
   id: string;
+  isTyping?: boolean;
   role: "assistant" | "user";
   text: string;
 };
@@ -44,9 +53,17 @@ type ChatResponse = {
   reply?: string;
 };
 
+type AudioContextConstructor = new () => AudioContext;
+
+type BrowserWindowWithWebkitAudio = Window & {
+  webkitAudioContext?: AudioContextConstructor;
+};
+
 const INITIAL_MESSAGES: ChatMessage[] = [
   {
+    displayText: "",
     id: "assistant-initial",
+    isTyping: true,
     role: "assistant",
     text: "こんにちは!ASURA.AIです。ご興味のあるサービスを選んでください。",
   },
@@ -110,9 +127,16 @@ export default function ChatBot() {
   const [service, setService] = useState<ServiceLabel | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [optionsDisabled, setOptionsDisabled] = useState(false);
+  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [statusText, setStatusText] = useState("待機中");
+  const activeTypingIdsRef = useRef<Set<string>>(new Set());
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const hasAudioPermissionRef = useRef(false);
+  const hasStartedInitialTypingRef = useRef(false);
+  const lastSoundAtRef = useRef(0);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const optionLockRef = useRef(false);
+  const typingTimersRef = useRef<number[]>([]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -132,26 +156,240 @@ export default function ChatBot() {
     };
   }, []);
 
+  const clearTypingTimers = useCallback(() => {
+    typingTimersRef.current.forEach((timerId) => window.clearTimeout(timerId));
+    typingTimersRef.current = [];
+    activeTypingIdsRef.current.clear();
+  }, []);
+
+  const ensureAudioContext = useCallback(() => {
+    const AudioContextFactory =
+      window.AudioContext ??
+      (window as BrowserWindowWithWebkitAudio).webkitAudioContext;
+
+    if (!AudioContextFactory) {
+      return null;
+    }
+
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContextFactory();
+    }
+
+    return audioContextRef.current;
+  }, []);
+
+  const primeTypingAudio = useCallback(() => {
+    if (!isSoundEnabled) {
+      return;
+    }
+
+    hasAudioPermissionRef.current = true;
+
+    const audioContext = ensureAudioContext();
+
+    if (audioContext?.state === "suspended") {
+      void audioContext.resume();
+    }
+  }, [ensureAudioContext, isSoundEnabled]);
+
+  const playTypeSound = useCallback(() => {
+    if (!isSoundEnabled || !hasAudioPermissionRef.current) {
+      return;
+    }
+
+    const now = performance.now();
+
+    if (now - lastSoundAtRef.current < 34) {
+      return;
+    }
+
+    const audioContext = ensureAudioContext();
+
+    if (!audioContext || audioContext.state === "closed") {
+      return;
+    }
+
+    if (audioContext.state === "suspended") {
+      void audioContext.resume();
+    }
+
+    lastSoundAtRef.current = now;
+
+    const startAt = audioContext.currentTime;
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    oscillator.type = "square";
+    oscillator.frequency.setValueAtTime(900 + Math.random() * 180, startAt);
+    gain.gain.setValueAtTime(0.0001, startAt);
+    gain.gain.exponentialRampToValueAtTime(0.028, startAt + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.035);
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+    oscillator.start(startAt);
+    oscillator.stop(startAt + 0.04);
+  }, [ensureAudioContext, isSoundEnabled]);
+
+  const handleChatToggle = () => {
+    primeTypingAudio();
+    setIsOpen((current) => !current);
+  };
+
+  const handleTypingSoundToggle = () => {
+    setIsSoundEnabled((current) => {
+      const nextValue = !current;
+
+      if (nextValue) {
+        hasAudioPermissionRef.current = true;
+
+        const audioContext = ensureAudioContext();
+
+        if (audioContext?.state === "suspended") {
+          void audioContext.resume();
+        }
+      }
+
+      return nextValue;
+    });
+  };
+
+  const animateAssistantMessage = useCallback(
+    (messageId: string, text: string, startDelay = 80) => {
+      if (activeTypingIdsRef.current.has(messageId)) {
+        return;
+      }
+
+      const characters = Array.from(text);
+
+      if (characters.length === 0) {
+        setMessages((current) =>
+          current.map((message) =>
+            message.id === messageId
+              ? { ...message, displayText: "", isTyping: false }
+              : message,
+          ),
+        );
+        return;
+      }
+
+      activeTypingIdsRef.current.add(messageId);
+
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === messageId
+            ? { ...message, displayText: "", isTyping: true }
+            : message,
+        ),
+      );
+
+      let index = 0;
+
+      const tick = () => {
+        index += 1;
+
+        const currentCharacter = characters[index - 1] ?? "";
+        const nextText = characters.slice(0, index).join("");
+        const isComplete = index >= characters.length;
+
+        setMessages((current) =>
+          current.map((message) =>
+            message.id === messageId
+              ? {
+                  ...message,
+                  displayText: nextText,
+                  isTyping: !isComplete,
+                }
+              : message,
+          ),
+        );
+
+        if (currentCharacter.trim()) {
+          playTypeSound();
+        }
+
+        if (isComplete) {
+          activeTypingIdsRef.current.delete(messageId);
+          return;
+        }
+
+        const nextDelay =
+          /[。、！？!?]/.test(currentCharacter) || currentCharacter === "\n"
+            ? 85
+            : 24;
+        const timerId = window.setTimeout(tick, nextDelay);
+
+        typingTimersRef.current.push(timerId);
+      };
+
+      const timerId = window.setTimeout(tick, startDelay);
+
+      typingTimersRef.current.push(timerId);
+    },
+    [playTypeSound],
+  );
+
+  useEffect(() => {
+    return () => {
+      clearTypingTimers();
+      void audioContextRef.current?.close();
+    };
+  }, [clearTypingTimers]);
+
+  useEffect(() => {
+    if (!isOpen || hasStartedInitialTypingRef.current) {
+      return;
+    }
+
+    const initialMessage = messages.find(
+      (message) => message.id === "assistant-initial",
+    );
+
+    if (!initialMessage) {
+      return;
+    }
+
+    hasStartedInitialTypingRef.current = true;
+    animateAssistantMessage(initialMessage.id, initialMessage.text);
+  }, [animateAssistantMessage, isOpen, messages]);
+
   const appendMessage = (role: ChatMessage["role"], text: string) => {
+    const id = createMessageId(role);
+    const shouldType = role === "assistant";
+
     setMessages((current) => [
       ...current,
       {
-        id: createMessageId(role),
+        displayText: shouldType ? "" : text,
+        id,
+        isTyping: shouldType,
         role,
         text,
       },
     ]);
+
+    if (shouldType) {
+      animateAssistantMessage(id, text);
+    }
   };
 
   const appendAssistantMessages = (texts: string[]) => {
+    const assistantMessages = texts.map((text) => ({
+      displayText: "",
+      id: createMessageId("assistant"),
+      isTyping: true,
+      role: "assistant" as const,
+      text,
+    }));
+
     setMessages((current) => [
       ...current,
-      ...texts.map((text) => ({
-        id: createMessageId("assistant"),
-        role: "assistant" as const,
-        text,
-      })),
+      ...assistantMessages,
     ]);
+
+    assistantMessages.forEach((message, index) => {
+      animateAssistantMessage(message.id, message.text, 160 + index * 700);
+    });
   };
 
   const moveToContactStep = () => {
@@ -225,6 +463,7 @@ export default function ChatBot() {
       return;
     }
 
+    primeTypingAudio();
     optionLockRef.current = true;
     setOptionsDisabled(true);
     appendMessage("user", option.label);
@@ -291,6 +530,7 @@ export default function ChatBot() {
       return;
     }
 
+    primeTypingAudio();
     appendMessage("user", trimmedInput);
     setInput("");
 
@@ -364,7 +604,7 @@ export default function ChatBot() {
         aria-controls="asura-chatbot-panel"
         aria-expanded={isOpen}
         className="chatbot-toggle"
-        onClick={() => setIsOpen((current) => !current)}
+        onClick={handleChatToggle}
         type="button"
       >
         <span className="chatbot-toggle-label">
@@ -388,6 +628,19 @@ export default function ChatBot() {
               <span />
             </div>
             <div className="path">asura-chat.sh</div>
+            <button
+              aria-label={
+                isSoundEnabled
+                  ? "タイピング音をオフにする"
+                  : "タイピング音をオンにする"
+              }
+              className={`chatbot-sound${isSoundEnabled ? " is-on" : ""}`}
+              onClick={handleTypingSoundToggle}
+              title={isSoundEnabled ? "typing sound on" : "typing sound off"}
+              type="button"
+            >
+              <span aria-hidden="true">{isSoundEnabled ? "[♪]" : "[ ]"}</span>
+            </button>
           </div>
 
           <div className="term-body chatbot-body">
@@ -411,7 +664,14 @@ export default function ChatBot() {
                   <div className="chatbot-message-role">
                     {message.role === "user" ? "$ you" : "> asura"}
                   </div>
-                  <p className="chatbot-message-text">{message.text}</p>
+                  <p className="chatbot-message-text">
+                    {message.displayText ?? message.text}
+                    {message.isTyping ? (
+                      <span aria-hidden="true" className="chatbot-type-cursor">
+                        _
+                      </span>
+                    ) : null}
+                  </p>
                 </div>
               ))}
 

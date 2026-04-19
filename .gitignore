@@ -1,3 +1,4 @@
 .claude/
 asuralp/node_modules/
 asuralp/.next/
+asuralp/.env*.local
