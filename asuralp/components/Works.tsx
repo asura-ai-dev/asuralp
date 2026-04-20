@@ -5,8 +5,7 @@ const WORKS = [
     meta: "OUKI. / LP",
     description:
       "訴求整理からデザイン・実装まで対応したLP制作。見た目だけでなく、申込みにつながる導線まで含めて形にしました。",
-    href: "https://ouki-salon.com/",
-    linkLabel: "ouki-salon.com",
+    linkLabel: "screenshot",
     image: "/images/portfolio-ouki.png",
     imageAlt: "OUKI.エステLPのファーストビュー",
     previewLabel: "LIVE SCREENSHOT",
@@ -108,7 +107,7 @@ function PortfolioEntry({
 
         <div className="portfolio-link-row">
           <span>{hasHref ? "open url" : work.linkLabel}</span>
-          <span>{hasHref ? work.linkLabel : "準備中"}</span>
+          <span>{hasHref ? work.linkLabel : hasImage ? "画像のみ" : "準備中"}</span>
         </div>
       </div>
     </>
