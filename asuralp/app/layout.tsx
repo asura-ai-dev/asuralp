@@ -18,7 +18,18 @@ const deco = Fira_Code({
 
 export const metadata: Metadata = {
   title: "ASURA | Terminal LP",
-  description: "terminal.html の世界観を受け継ぐ Next.js ランディングページ基盤"
+  description: "terminal.html の世界観を受け継ぐ Next.js ランディングページ基盤",
+  openGraph: {
+    title: "ASURA | Terminal LP",
+    description: "terminal.html の世界観を受け継ぐ Next.js ランディングページ基盤",
+    type: "website",
+    locale: "ja_JP"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ASURA | Terminal LP",
+    description: "terminal.html の世界観を受け継ぐ Next.js ランディングページ基盤"
+  }
 };
 
 export default function RootLayout({
