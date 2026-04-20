@@ -2,12 +2,14 @@ const WORKS = [
   {
     category: "Web制作",
     title: "エステLP制作",
-    meta: "5万円",
+    meta: "OUKI. / LP",
     description:
       "訴求整理からデザイン・実装まで対応したLP制作。見た目だけでなく、申込みにつながる導線まで含めて形にしました。",
-    previewType: "visual",
-    previewMain: "LP MOCK",
-    previewSub: "スクショ or モック画像",
+    href: "https://ouki-salon.com/",
+    linkLabel: "ouki-salon.com",
+    image: "/images/portfolio-ouki.png",
+    imageAlt: "OUKI.エステLPのファーストビュー",
+    previewLabel: "LIVE SCREENSHOT",
     tone: "peach",
   },
   {
@@ -16,9 +18,10 @@ const WORKS = [
     meta: "現場オペレーション向け",
     description:
       "シフト確認と勤怠記録を分断せず、毎日の運用を一画面で回せるようにした業務システムです。",
-    previewType: "visual",
-    previewMain: "SYSTEM DEMO",
-    previewSub: "スクショ or デモ画像",
+    linkLabel: "screenshot",
+    image: "/images/portfolio-shift.png",
+    imageAlt: "シフト管理兼タイムカードシステムのスタッフ選択画面",
+    previewLabel: "APP SCREENSHOT",
     tone: "mint",
   },
   {
@@ -27,9 +30,8 @@ const WORKS = [
     meta: "メンバー獲得済み",
     description:
       "Claude Codeを仕事にどう取り入れるかを、対面で伴走しながら伝える講座として展開しています。",
-    previewType: "visual",
-    previewMain: "OFFLINE CLASS",
-    previewSub: "写真 or アイコン",
+    linkLabel: "coming soon",
+    previewLabel: "COMING SOON",
     tone: "peach",
   },
   {
@@ -38,9 +40,9 @@ const WORKS = [
     meta: "好評",
     description:
       "実際に使える形へ整理した知見を記事化し、学んだその日に試しやすいコンテンツとして届けています。",
-    previewType: "metric",
-    previewMain: "skills on sale",
-    previewSub: "reaction: good",
+    href: "https://note.com/sura_asura/n/n29585a178989?sub_rt=share_sb",
+    linkLabel: "note.com",
+    previewLabel: "OPEN NOTE",
     tone: "mint",
   },
   {
@@ -49,12 +51,89 @@ const WORKS = [
     meta: "収益化 2ヶ月で達成",
     description:
       "AIagentによって自律的に運用しています。",
-    previewType: "metric",
-    previewMain: "1,400 subscribers",
-    previewSub: "monetized in 2 months",
+    href: "https://www.youtube.com/channel/UCuO_HCuBEM6v3wrko3Iu8Hw",
+    linkLabel: "youtube.com",
+    previewLabel: "OPEN CHANNEL",
     tone: "peach",
   },
 ] as const
+
+function PortfolioEntry({
+  work,
+}: {
+  work: (typeof WORKS)[number]
+}) {
+  const hasHref = "href" in work
+  const hasImage = "image" in work
+
+  const content = (
+    <>
+      <div className="portfolio-entry-head">
+        <span>{work.category}</span>
+        <span className="portfolio-entry-rule" aria-hidden="true" />
+      </div>
+
+      <div className="portfolio-entry-grid">
+        <div className="portfolio-copy">
+          <h3>{work.title}</h3>
+          <p className="portfolio-meta">{work.meta}</p>
+          <p className="portfolio-description">{work.description}</p>
+        </div>
+
+        <div
+          className={`portfolio-preview ${
+            hasImage ? "portfolio-preview-image" : "portfolio-preview-link"
+          }`}
+        >
+          {hasImage ? (
+            <>
+              <img
+                alt={work.imageAlt}
+                className="portfolio-shot"
+                loading="lazy"
+                src={work.image}
+              />
+              <div className="portfolio-preview-caption">
+                <span>{work.previewLabel}</span>
+                <span>{work.linkLabel}</span>
+              </div>
+            </>
+          ) : (
+            <div className="portfolio-link-preview">
+              <span className="portfolio-link-kicker">{work.previewLabel}</span>
+              <span className="portfolio-link-domain">{work.linkLabel}</span>
+            </div>
+          )}
+        </div>
+
+        <div className="portfolio-link-row">
+          <span>{hasHref ? "open url" : work.linkLabel}</span>
+          <span>{hasHref ? work.linkLabel : "準備中"}</span>
+        </div>
+      </div>
+    </>
+  )
+
+  if (hasHref) {
+    return (
+      <a
+        aria-label={`${work.title}を開く`}
+        className={`portfolio-entry portfolio-${work.tone} reveal`}
+        href={work.href}
+        rel="noreferrer"
+        target="_blank"
+      >
+        {content}
+      </a>
+    )
+  }
+
+  return (
+    <article className={`portfolio-entry portfolio-${work.tone} reveal`}>
+      {content}
+    </article>
+  )
+}
 
 export default function Works() {
   return (
@@ -94,33 +173,10 @@ export default function Works() {
                     key={copyIndex}
                   >
                     {WORKS.map((work) => (
-                      <article
-                        className={`portfolio-entry portfolio-${work.tone} reveal`}
+                      <PortfolioEntry
                         key={`${copyIndex}-${work.category}`}
-                      >
-                        <div className="portfolio-entry-head">
-                          <span>{work.category}</span>
-                          <span className="portfolio-entry-rule" aria-hidden="true" />
-                        </div>
-
-                        <div className="portfolio-entry-grid">
-                          <div className="portfolio-copy">
-                            <h3>{work.title}</h3>
-                            <p className="portfolio-meta">{work.meta}</p>
-                          </div>
-
-                          <div
-                            className={`portfolio-preview portfolio-preview-${work.previewType}`}
-                          >
-                            <div className="portfolio-preview-main">
-                              {work.previewMain}
-                            </div>
-                            <div className="portfolio-preview-sub">
-                              {work.previewSub}
-                            </div>
-                          </div>
-                        </div>
-                      </article>
+                        work={work}
+                      />
                     ))}
                   </div>
                 ))}
