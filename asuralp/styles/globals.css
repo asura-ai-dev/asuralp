@@ -2467,15 +2467,54 @@ video {
     top: 10px;
     left: 10px;
     right: 10px;
-    padding-inline: 12px;
+    gap: 8px;
+    min-height: 58px;
+    padding: 8px 10px;
   }
 
-  .nav-links a:not(:last-child) {
+  .nav-l {
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .nav-l .dots {
+    display: none;
+  }
+
+  .nav-title {
+    white-space: nowrap;
+  }
+
+  .nav-r {
+    gap: 6px;
+    margin-left: auto;
+  }
+
+  .nav-links {
     display: none;
   }
 
   .nav-socials {
-    display: none;
+    display: flex;
+    gap: 5px;
+  }
+
+  .nav-r .nav-social {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 8px;
+  }
+
+  .nav-social svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .theme-tog {
+    padding: 6px 7px;
+    font-size: 10px;
+    white-space: nowrap;
   }
 
   .hero {
