@@ -2369,13 +2369,13 @@ video {
 
 @keyframes videoQueueLoop {
   to {
-    transform: translateX(-50%);
+    transform: translateX(-33.333333%);
   }
 }
 
 @keyframes portfolioLoopReverse {
   from {
-    transform: translateX(-50%);
+    transform: translateX(-33.333333%);
   }
 
   to {

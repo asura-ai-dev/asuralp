@@ -165,9 +165,9 @@ export default function Works() {
 
             <div className="portfolio-marquee">
               <div className="portfolio-marquee-track">
-                {[0, 1].map((copyIndex) => (
+                {[0, 1, 2].map((copyIndex) => (
                   <div
-                    aria-hidden={copyIndex === 1}
+                    aria-hidden={copyIndex > 0}
                     className="portfolio-marquee-group"
                     key={copyIndex}
                   >

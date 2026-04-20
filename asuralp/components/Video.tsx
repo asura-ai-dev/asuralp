@@ -71,9 +71,9 @@ export default function Video() {
               <div
                 className={`video-marquee-track${isPaused ? " is-paused" : ""}`}
               >
-                {[0, 1].map((copyIndex) => (
+                {[0, 1, 2].map((copyIndex) => (
                   <div
-                    aria-hidden={copyIndex === 1}
+                    aria-hidden={copyIndex > 0}
                     className="video-marquee-group"
                     key={copyIndex}
                   >
@@ -89,7 +89,7 @@ export default function Video() {
                                 allowFullScreen
                                 loading="lazy"
                                 src={`https://www.youtube-nocookie.com/embed/${item.videoId}?autoplay=1`}
-                                tabIndex={copyIndex === 1 ? -1 : undefined}
+                                tabIndex={copyIndex > 0 ? -1 : undefined}
                                 title={item.title}
                               />
                             ) : (
@@ -97,7 +97,7 @@ export default function Video() {
                                 aria-label={`${item.title}を再生`}
                                 className="video-thumb"
                                 onClick={() => setActiveVideoKey(videoKey)}
-                                tabIndex={copyIndex === 1 ? -1 : undefined}
+                                tabIndex={copyIndex > 0 ? -1 : undefined}
                                 type="button"
                               >
                                 <img
