@@ -31,6 +31,9 @@ const VIDEO_ITEMS = [
 
 export default function Video() {
   const [activeVideoKey, setActiveVideoKey] = useState<string | null>(null);
+  const [isTouchingTrack, setIsTouchingTrack] = useState(false);
+
+  const isPaused = Boolean(activeVideoKey) || isTouchingTrack;
 
   return (
     <section className="section" id="video">
@@ -58,9 +61,15 @@ export default function Video() {
           </div>
 
           <div className="term-body section-term-body video-term-body">
-            <div className="video-marquee reveal">
+            <div
+              className="video-marquee reveal"
+              onPointerCancel={() => setIsTouchingTrack(false)}
+              onPointerDown={() => setIsTouchingTrack(true)}
+              onPointerLeave={() => setIsTouchingTrack(false)}
+              onPointerUp={() => setIsTouchingTrack(false)}
+            >
               <div
-                className={`video-marquee-track${activeVideoKey ? " is-paused" : ""}`}
+                className={`video-marquee-track${isPaused ? " is-paused" : ""}`}
               >
                 {[0, 1].map((copyIndex) => (
                   <div
@@ -93,7 +102,8 @@ export default function Video() {
                               >
                                 <img
                                   alt=""
-                                  loading="lazy"
+                                  decoding="async"
+                                  loading={copyIndex === 0 ? "eager" : "lazy"}
                                   src={`https://i.ytimg.com/vi/${item.videoId}/hqdefault.jpg`}
                                 />
                                 <span className="video-play" aria-hidden="true" />
