@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Fira_Code, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import "../styles/globals.css";
 
@@ -62,6 +63,7 @@ export default function RootLayout({
       <body className={`${mono.variable} ${deco.variable}`}>
         <div className="bg-blobs" aria-hidden="true" />
         <div className="app-shell">{children}</div>
+        <Analytics />
       </body>
     </html>
   );
